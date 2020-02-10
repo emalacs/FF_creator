@@ -154,8 +154,8 @@ def ffbonded_merge_dihedrals(pep_dihedrals, fib_dihedrals, dict_pep_atomtypes, d
     # Type 9 (1) of peptide and fibril will be divided by the half
     # and the type 2 will be kept only the one from the peptide
     # QUESTI DUE COMANDI RISOLVONO IL COPY WARNING
-    # pep_kd_1.is_copy = False
-    # fib_kd_1.is_copy = False
+    pep_kd_1.is_copy = False
+    fib_kd_1.is_copy = False
     pep_kd_1.loc[:, 'Kd'] = pep_kd_1.loc[:, 'Kd'].divide(2)
     fib_kd_1.loc[:, 'Kd'] = fib_kd_1.loc[:, 'Kd'].divide(2)
     # QUESTI DUE COMANDI SONO QUELLI ORIGINALI PRIMA DELL'OTTIMIZZAZIONE COPY WARNING
