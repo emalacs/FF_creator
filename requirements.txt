@@ -1,5 +1,2 @@
-pandas==0.25.3
-numpy==1.18.0
-gromacs
-ProDy
 scipy
+matplotlib
