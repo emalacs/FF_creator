@@ -36,7 +36,7 @@ z
 #nrow(z)
 hist3D(z = z, theta = -180)
 
-
+write.csv(z, "analysis/histo-matrix.csv")
 #dat
 
 #ncol(dat)
