@@ -238,6 +238,12 @@ def ffnonbonded_fib_pairs(fib_pairs, dict_atomtypes):
     ai_aj = fib_pairs_full['ai'].str.split(":", n = 1, expand = True)
     fib_pairs_full.loc[:, 'ai'] = ai_aj.loc[:, 0]
     fib_pairs_full.columns = [';ai', 'aj', 'type', 'A', 'B']
+    fib_epsilon = (fib_pairs['A'] ** 2) / (4 * (fib_pairs['B']))
+    fib_epsilon = fib_epsilon * (300/70)
+
+
+
+
     return fib_pairs_full
 
 # This function is similar to the previous one
