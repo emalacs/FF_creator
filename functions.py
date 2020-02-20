@@ -238,6 +238,10 @@ def ffnonbonded_fib_pairs(fib_pairs, dict_atomtypes):
     ai_aj = fib_pairs_full['ai'].str.split(":", n = 1, expand = True)
     fib_pairs_full.loc[:, 'ai'] = ai_aj.loc[:, 0]
     fib_pairs_full.columns = [';ai', 'aj', 'type', 'A', 'B']
+    # This part allow to reweight all the C6 and C12 of the pairs. So it is possible for us to use higher temperatures
+    # such as 300 K and have a proper viscosity during the simulation.
+    # Basically, the intramolecular are ok at 70K but the molecules moves like they're in water at 70K.
+
     fib_epsilon = (fib_pairs['A'] ** 2) / (4 * (fib_pairs['B']))
     fib_epsilon = fib_epsilon * (300/70)
 
