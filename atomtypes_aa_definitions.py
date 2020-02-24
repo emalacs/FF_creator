@@ -16,10 +16,10 @@ gromos_atp = pd.DataFrame(
      'mass': [16, 17, 15, 12, 13, 14, 15, 14, 17],
      'at.num': [8, 8, 7, 6, 6, 6, 6, 6, 7],
      'c12': [1e-06, 3.011e-05, 4.639e-05, 4.937284e-06, 9.70225e-05, 3.3965584e-05,
-            2.6646244e-05, 2.8058209e-05, 1.2e-05],
-     'bonds': [],
-     'angles': [],
-     'improper': []
+            2.6646244e-05, 2.8058209e-05, 1.2e-05]#,
+     #'bonds': [],
+     #'angles': [],
+     #'improper': []
      # da aggiungere le definizioni di bonded, angles e improper
      }
 )

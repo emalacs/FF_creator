@@ -11,12 +11,14 @@ def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     # print ("[ atomtypes ] of ffnonbonded")
     # This function prepare the file for ffnonbonded of the peptide
     # Insertion of information in atomtypes
+    print(atomtypes)
     dict_atomtypes = atomtypes.set_index("; nr")["type"].to_dict()
     atomtypes['at.group'] = atomtypes['residue'] + '_' + atomtypes['atom']
+    print(atomtypes)
     atomtypes['at.group'].replace(gromos_aa, inplace = True)
-    # E QUI CI SIAMO
     atomtypes.insert(3, 'at.num', 4)
     atomtypes['at.num'] = atomtypes['at.group'].map(gromos_atp['at.num'])
+    print(atomtypes)
     atomtypes.insert(4, 'mass', 5)
     atomtypes['mass'] = atomtypes['at.group'].map(gromos_atp['mass'])
     atomtypes["charge"] = '0.000000'
@@ -24,6 +26,7 @@ def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     atomtypes["ptype"] = 'A'
     atomtypes['c6'] = '0.00000e+00'
     atomtypes['c12'] = atomtypes['at.group'].map(gromos_atp['c12'])
+    print(atomtypes)
     c12_notation = atomtypes["c12"].map(lambda x:'{:.6e}'.format(x))
     atomtypes = atomtypes.assign(c12 = c12_notation)
     atomtypes.drop(columns = ['; nr', 'resnr', 'residue', 'atom', 'cgnr', 'at.group'], inplace = True)
@@ -88,6 +91,7 @@ def ffbonded_bonds(bonds, dict_atomtypes):
     bonds = bonds.assign(r0 = r0_notation)
     # Ennesima definizione delle colonne
     bonds.columns = ["; i", "j", "func", "b0", "kb"]
+    print(bonds)
     return bonds
 
 
