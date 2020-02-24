@@ -130,7 +130,7 @@ print('Fibril FF ready!!')
 print('')
 print('Merge ffbonded.itp preparation')
 
-merge_dihedrals = ffbonded_merge_dihedrals(pep_dihedrals, fib_dihedrals,dict_pep_atomtypes, dict_fib_atomtypes)
+merge_dihedrals = ffbonded_merge_dihedrals(pep_dihedrals, fib_dihedrals, dict_pep_atomtypes, dict_fib_atomtypes)
 write_merge_ffbonded(pep_ff_bonds, pep_ff_angles, merge_dihedrals)
 
 # vimdiff ok

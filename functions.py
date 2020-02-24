@@ -38,6 +38,7 @@ def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     atp = pd.DataFrame(atomtypes, columns = ['; type', 'mass'])
     return atp, atomtypes, dict_atomtypes
 
+
 # Function for topology
 
 def make_topology_bonds(top_bonds):
@@ -76,6 +77,9 @@ def ffbonded_bonds(bonds, dict_atomtypes):
     bonds["aj"].replace(dict_atomtypes, inplace = True)
     # Cose per farlo funzionare
     bonds.to_string(index = False)
+    #print(f'bonds\n{bonds}')
+    bonds['kb'] = bonds['kb'] * (300 / 70)
+    #print(f'bonds\n{bonds}')
     # Separazione delle colonne con dei numeri per la notazione scientifica
     kb_notation = bonds["kb"].map(lambda x:'{:.9e}'.format(x))
     r0_notation = bonds["r0"].map(lambda x:'{:.9e}'.format(x))
@@ -94,6 +98,9 @@ def ffbonded_angles(angles, dict_atomtypes):
     angles["ak"].replace(dict_atomtypes, inplace = True)
     # Cose per farlo funzionare
     angles.to_string(index = False)
+    #print(f'angles\n{angles}')
+    angles['Ka'] = angles['Ka'] * (300 / 70)
+    #print(f'angles\n{angles}')
     # Separazione delle colonne con dei numeri per la notazione scientifica
     th0_notation = angles["th0"].map(lambda x:'{:.9e}'.format(x))
     ka_notation = angles["Ka"].map(lambda x:'{:.9e}'.format(x))
@@ -113,6 +120,7 @@ def ffbonded_dihedrals(dihedrals, dict_atomtypes):
     dihedrals["al"].replace(dict_atomtypes, inplace = True)
     # Cose per farlo funzionare
     dihedrals.to_string(index = False)
+    dihedrals['Kd'] = dihedrals['Kd'] * (300 / 70)
     # Separazione delle colonne con dei numeri per la notazione scientifica
     phi0_notation = dihedrals["phi0"].map(lambda x:'{:.9e}'.format(x))
     kd_notation = dihedrals["Kd"].map(lambda x:'{:.9e}'.format(x))
@@ -166,6 +174,7 @@ def ffbonded_merge_dihedrals(pep_dihedrals, fib_dihedrals, dict_pep_atomtypes, d
     merge_dihedrals = merge_pep_dihedrals.append(fib_kd_1, sort = False, ignore_index = True)
     # Here is the common part of the dihedrals for peptide and fibril
     merge_dihedrals.to_string(index = False)
+    merge_dihedrals['Kd'] = merge_dihedrals['Kd'] * (300 / 70)
     phi0_notation = merge_dihedrals["phi0"].map(lambda x:'{:.9e}'.format(x))
     kd_notation = merge_dihedrals["Kd"].map(lambda x:'{:.9e}'.format(x))
     merge_dihedrals = merge_dihedrals.assign(phi0 = phi0_notation)
@@ -183,14 +192,40 @@ def ffnonbonded_pep_pairs(pep_pairs, dict_pep_atomtypes):
     pep_pairs["aj"].replace(dict_pep_atomtypes, inplace = True)
     # Cose per farlo funzionare
     pep_pairs.to_string(index = False)
+    # Ennesima definizione delle colonne
+    pep_pairs.columns = [";ai", "aj", "type", "A", "B"]
+
+    # This part allow to reweight all the C6 and C12 of the pairs. So it is possible for us to use higher temperatures
+    # such as 300 K and have a proper viscosity during the simulation.
+    # Basically, the intramolecular are ok at 70K but the molecules moves like they're in water at 70K.
+    # print(pep_pairs)
+    # pep_old_epsilon = (pep_pairs['A'] ** 2) / (4 * (pep_pairs['B']))
+    # print(f'\tc6^2/(4xc12)'
+    #      f'\n'
+    #      f'\tOld Peptide Epsilon = {pep_old_epsilon.iloc[0]}\n')
+    # t_check = pep_old_epsilon / (8.314462618 * (10 ** -3))
+    # print(f'\toldEpsilon/R in KJ'
+    #      f'\n'
+    #      f'\tTemperature = {t_check.iloc[0]}\n')
+    # pep_new_epsilon = pep_old_epsilon * (300 / t_check)  # qui sarebbe carino mettere un input della temperatura
+    # print(f'\toldEpsilon/(300/{t_check.iloc[0]})'
+    #      f'\n'
+    #      f'\tNew Peptide Epsilon = {pep_new_epsilon.iloc[0]}\n')
+    # In questo caso stai comunque moltiplicando per due i valori di C6 e C12 e dunque aumentano.
+    # fib_pairs_full['A'] = fib_pairs_full['A'] * (300/t_check)
+    # fib_pairs_full['B'] = fib_pairs_full['B'] * (300/t_check)
+
+    pep_pairs['A'] = pep_pairs['A'] * (300 / 70)
+    pep_pairs['B'] = pep_pairs['B'] * (300 / 70)
+    # print(fib_pairs_full)
+
     # Notazione scientifica
     A_notation = pep_pairs["A"].map(lambda x:'{:.9e}'.format(x))
     B_notation = pep_pairs["B"].map(lambda x:'{:.9e}'.format(x))
     # Sostituzione delle colonne all'interno del dataframe
     pep_pairs = pep_pairs.assign(A = A_notation)
     pep_pairs = pep_pairs.assign(B = B_notation)
-    # Ennesima definizione delle colonne
-    pep_pairs.columns = [";ai", "aj", "type", "A", "B"]
+    # print(pep_pairs)
     return pep_pairs
 
 
@@ -199,12 +234,7 @@ def ffnonbonded_fib_pairs(fib_pairs, dict_atomtypes):
     fib_pairs["aj"].replace(dict_atomtypes, inplace = True)
     # Cose per farlo funzionare
     fib_pairs.to_string(index = False)
-    # Notazione scientifica
-    A_notation = fib_pairs["A"].map(lambda x:'{:.9e}'.format(x))
-    B_notation = fib_pairs["B"].map(lambda x:'{:.9e}'.format(x))
-    # Sostituzione delle colonne all'interno del dataframe
-    fib_pairs = fib_pairs.assign(A = A_notation)
-    fib_pairs = fib_pairs.assign(B = B_notation)
+
     # Ennesima definizione delle colonne
     fib_pairs.columns = ["ai", "aj", "type", "A", "B"]
 
@@ -238,17 +268,40 @@ def ffnonbonded_fib_pairs(fib_pairs, dict_atomtypes):
     ai_aj = fib_pairs_full['ai'].str.split(":", n = 1, expand = True)
     fib_pairs_full.loc[:, 'ai'] = ai_aj.loc[:, 0]
     fib_pairs_full.columns = [';ai', 'aj', 'type', 'A', 'B']
+
     # This part allow to reweight all the C6 and C12 of the pairs. So it is possible for us to use higher temperatures
     # such as 300 K and have a proper viscosity during the simulation.
     # Basically, the intramolecular are ok at 70K but the molecules moves like they're in water at 70K.
+    # print(fib_pairs_full)
+    # fib_old_epsilon = (fib_pairs_full['A'] ** 2) / (4 * (fib_pairs_full['B']))
+    # print(f'\tc6^2/(4xc12)'
+    #      f'\n'
+    #      f'\tOld Fibril Epsilon = {fib_old_epsilon.iloc[0]}\n')
+    # t_check = fib_old_epsilon / (8.314462618 * (10 ** -3))
+    # print(f'\toldEpsilon/R in KJ'
+    #      f'\n'
+    #      f'\tTemperature = {t_check.iloc[0]}\n')
+    # fib_new_epsilon = fib_old_epsilon * (300/t_check) # qui sarebbe carino mettere un input della temperatura
+    # print(f'\toldEpsilon/(300/{t_check.iloc[0]})'
+    #      f'\n'
+    #      f'\tNew Fibril Epsilon = {fib_new_epsilon.iloc[0]}\n')
+    # In questo caso stai comunque moltiplicando per due i valori di C6 e C12 e dunque aumentano.
+    # fib_pairs_full['A'] = fib_pairs_full['A'] * (300/t_check)
+    # fib_pairs_full['B'] = fib_pairs_full['B'] * (300/t_check)
 
-    fib_epsilon = (fib_pairs['A'] ** 2) / (4 * (fib_pairs['B']))
-    fib_epsilon = fib_epsilon * (300/70)
+    fib_pairs_full['A'] = fib_pairs_full['A'] * (300 / 70)
+    fib_pairs_full['B'] = fib_pairs_full['B'] * (300 / 70)
+    # print(fib_pairs_full)
 
-
-
-
+    # Notazione scientifica
+    A_notation = fib_pairs_full["A"].map(lambda x:'{:.9e}'.format(x))
+    B_notation = fib_pairs_full["B"].map(lambda x:'{:.9e}'.format(x))
+    # Sostituzione delle colonne all'interno del dataframe
+    fib_pairs_full = fib_pairs_full.assign(A = A_notation)
+    fib_pairs_full = fib_pairs_full.assign(B = B_notation)
+    # print(fib_pairs_full)
     return fib_pairs_full
+
 
 # This function is similar to the previous one
 # however it appends also the values for the merged ff pairs
@@ -264,11 +317,18 @@ def ffnonbonded_merge_pairs(pep_pairs, fib_pairs, dict_pep_atomtypes, dict_fib_a
     pep_pairs.to_string(index = False)
     pep_pairs.columns = ["ai", "aj", "type", "A", "B"]
 
+    pep_pairs['A'] = pep_pairs['A'] * (300 / 70)
+    pep_pairs['B'] = pep_pairs['B'] * (300 / 70)
+
     # Fibril input handling
-    fib_pairs[';ai'].replace(dict_fib_atomtypes, inplace = True)
+    fib_pairs['ai'].replace(dict_fib_atomtypes, inplace = True)
     fib_pairs["aj"].replace(dict_fib_atomtypes, inplace = True)
     fib_pairs.to_string(index = False)
     fib_pairs.columns = ["ai", "aj", "type", "A", "B"]
+
+    fib_pairs['A'] = fib_pairs['A'] * (300 / 70)
+    fib_pairs['B'] = fib_pairs['B'] * (300 / 70)
+
     # Calcolo di epsilon per peptide e fibrilla
     pep_epsilon = (pep_pairs['A'] ** 2) / (4 * (pep_pairs['B']))
     fib_epsilon = (fib_pairs['A'] ** 2) / (4 * (fib_pairs['B']))
@@ -279,8 +339,6 @@ def ffnonbonded_merge_pairs(pep_pairs, fib_pairs, dict_pep_atomtypes, dict_fib_a
           f'\tFibril epsilon: {fib_epsilon[0]}\n'
           f'\tRatio: {ratio}'
           f'\n')
-    # print(pep_epsilon) # e' come quella di gromacs!!!!
-    # print(fib_epsilon)
 
     # Reweight peptide LJ
     pep_pairs['A'] = pep_pairs['A'] / ratio
