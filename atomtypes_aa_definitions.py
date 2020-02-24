@@ -4,37 +4,9 @@ import pandas as pd
 # along with the mass and c12 for every atomtype contained in Gromos
 
 # Gromos atomtypes definition
-
-
-# g_mass = pd.read_csv('gromos/atomtypes.atp', sep = "\s+", header = None)
-# g_mass.columns = ['at.group', 'mass']
-# g_mass_at_group = g_mass['at.group'].tolist()
-# g_mass_mass = g_mass['mass'].tolist()
-
-# print(f'g_mass_at_group')
-# print("'name': {}, \n 'mass': {}".format(g_mass_at_group, g_mass_mass))
-
-# g_nb = pd.read_csv('gromos/ffnonbonded.itp', sep = '\s+', header = None)
-# gromos = pd.DataFrame(g_nb, columns = [0, 1, 6])
-# gromos.columns = ['at.group', 'at.num', 'c12']
-# gro_at_group = gromos['at.group'].tolist()
-# gro_at_num = gromos['at.num'].tolist()
-# gro_at_c12 = gromos['c12'].tolist()
-
-# print(gromos)
-# print("'name': {}, \n 'mass': {}, \n 'c12': {}".format(gro_at_group, gro_at_num, gro_at_c12))
-
-# IN QUESTO CASO SI PUO PROVARE CON UN IF ED IFELSE E USARE TUTTI GLI AA
-# LA MASSA VA NELL'ATOMTYPE.ATP E ANCHE NEL FFNONBONDED INCLUDENDO ANCHE I C12
-# DATO CHE SONO TUTTI DEI DATAFRAME CHE POI VENGONO PASSATI A DIZIONARIO, SI PUO PROVARE A FARNE UNO UNICO
-# CON TUTTE LE DEFINIZIONI E POI SOSTITUIRE IN BASE A QUELLO CHE MI SERVE
-# C12 gromos definitions, imported from ffnonbonded.itp
-# AGGIIUNGERE ANCHE LE DEFINIZIONI GROMOS PER BONDS, ANGLES E IMPROPER DIHEDRALS
-
-
 # Abbiamo tenuto solo le info che ci servivano. Da aggiungere le definizioni dei terminali e quelli che serviranno
 # per i prossimi aminoacidi. Abbiamo aggiunto gli H nella massa (e nel c12) - OA ed N -
-# per aggiungere C12 "regola del 20"
+# per aggiungere C12 "regola del 20".
 
 # THE C12 RATIO CHANGED a little bit.
 gromos_atp = pd.DataFrame(
@@ -43,10 +15,10 @@ gromos_atp = pd.DataFrame(
      'at.num':[8, 8, 7, 6, 6, 6, 6, 6, 7],
      'c12':[1e-06, 3.011e-05, 4.639e-05, 4.937284e-06, 9.70225e-05, 3.3965584e-05,
             2.6646244e-05, 2.8058209e-05, 1.2e-05]
+     # da aggiungere le definizioni di bonded, angles e improper
      }
 )
 
-# gromos_mca = {}
 gromos_atp.to_dict()
 gromos_atp.set_index('name', inplace = True)
 
