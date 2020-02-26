@@ -1907,7 +1907,7 @@
 .   CA    CB   OG1     ga_13
 .   CA    CB   CG2     ga_15
 .  OG1    CB   CG2     ga_15
-.   CB   OG1   HG1     ga_12
+   CB   OG1   HG1     ga_12
 .   CA     C     O     ga_30
 .   CA     C    +N     ga_19
 .    O     C    +N     ga_33
@@ -2113,11 +2113,11 @@
   CE1   HE1    gb_3    
 .  CE1    CZ    gb_16
   CE2   HE2    gb_3    
-  CE2    CZ    gb_16   
+.  CE2    CZ    gb_16
 .   CZ    OH    gb_13
    OH    HH    gb_1    
-    C     O    gb_5    
-    C    +N    gb_10   
+.    C     O    gb_5
+.    C    +N    gb_10
  [ exclusions ]
 ;  ai    aj
    CB   HD1
