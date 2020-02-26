@@ -177,7 +177,7 @@
 ; Example of usage in terms of non-bonded atom types
 ; 
 ; 
-;  ICT(H)[N]  CT[N]  (T0[N])
+;  ICT(H)[N]  CT[N]  (T0[N]) # angolo - forza
 ;
 #define ga_1         90.00      380.00
 ; NR(heme)  -  FE  -  C          90
@@ -351,7 +351,7 @@
 ; Example of usage
 ; 
 ; 
-; ICQ(H)[N] CQ[N] (Q0[N])
+; ICQ(H)[N] CQ[N] (Q0[N]) # angolo - forza
 ;
 #define gi_1           0.0   167.42309
 ; planar groups 40      
@@ -373,7 +373,7 @@
 ; Example of usage in terms of non-bonded atom types
 ; 
 ; 
-; ICP(H)[N]  CP[N] PD[N] NP[N]
+; ICP(H)[N]  CP[N] PD[N] NP[N] # angolo forza
 ; 
 #define gd_1    180.000       2.67          1
 ; CHn-CHn-CHn-OA (sugar)  0.6
