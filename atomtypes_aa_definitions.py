@@ -199,15 +199,15 @@ LEU = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'CG', 'CD1', 'CD2', 'C', 'O']
                     'name': ['N', 'H', 'CH1', 'CH2', 'CH1', 'CH3', 'CH3', 'C', 'O']}
                    )
 
-bLEU = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'def': ['']}
+bLEU = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'CG', 'CG', 'C', 'C'],
+                     'aj': ['CA', 'CB', 'C', 'CG', 'CD1', 'CD2', 'O', '+N'],
+                     'def': ['gb_21', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_5', 'gb_10']}
                     )
 
-aLEU = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'ak': [''],
-                     'def': ['']}
+aLEU = pd.DataFrame({'ai': ['-C', 'N', 'N', 'CB', 'CA', 'CB', 'CB', 'CD1', 'CA', 'CA', 'O'],
+                     'aj': ['N', 'CA', 'CA', 'CA', 'CB', 'CG', 'CG', 'CG', 'C', 'C', 'C'],
+                     'ak': ['CA', 'CB', 'C', 'C', 'CG', 'CD1', 'CD2', 'CD2', 'O', '+N', '+N'],
+                     'def': ['ga_31', 'ga_13', 'ga_13', 'ga_13', 'ga_15', 'ga_15', 'ga_15', 'ga_30', 'ga_19', 'ga_33']}
                     )
 
 #dLEU = pd.DataFrame({'ai': [''],
@@ -217,11 +217,11 @@ aLEU = pd.DataFrame({'ai': [''],
 #                     'def': ['']}
 #                    )
 
-iLEU = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'ak': [''],
-                     'al': [''],
-                     'def': ['']}
+iLEU = pd.DataFrame({'ai': ['CA', 'CB', 'C'],
+                     'aj': ['N', 'CD1', 'CA'],
+                     'ak': ['C', 'CD2', '+N'],
+                     'al': ['CB', 'CG', 'O'],
+                     'def': ['gi_2', 'gi_2', 'gi_1']}
                     )
 
 LEU.to_dict()
@@ -231,15 +231,15 @@ SER = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'OG', 'HG', 'C', 'O'],
                     'name': ['N', 'H', 'CH1', 'CH2', 'OA', 'H', 'C', 'O']}
                    )
 
-bSER = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'def': ['']}
+bSER = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'C', 'C'],
+                     'aj': ['CA', 'CB', 'C', 'OG', 'O', '+N'],
+                     'def': ['gb_21', 'gb_27', 'gb_27', 'gb_18', 'gb_5', 'gb_10']}
                     )
 
-aSER = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'ak': [''],
-                     'def': ['']}
+aSER = pd.DataFrame({'ai': ['-C', 'N', 'N', 'CB', 'CA', 'CA', 'CA', 'O'],
+                     'aj': ['N', 'CA', 'CA', 'CA', 'CB', 'C', 'C', 'C'],
+                     'ak': ['CA', 'CB', 'C', 'C', 'OG', 'O', '+N', '+N'],
+                     'def': ['ga_31', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_30', 'ga_19', 'ga_33']}
                     )
 
 #dSER = pd.DataFrame({'ai': [''],
@@ -249,11 +249,11 @@ aSER = pd.DataFrame({'ai': [''],
 #                     'def': ['']}
 #                    )
 
-iSER = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'ak': [''],
-                     'al': [''],
-                     'def': ['']}
+iSER = pd.DataFrame({'ai': ['CA', 'C'],
+                     'aj': ['N', 'CA'],
+                     'ak': ['C', '+N'],
+                     'al': ['CB', 'O'],
+                     'def': ['gi_2', 'gi_1']}
                     )
 
 SER.to_dict()
@@ -263,15 +263,16 @@ SERT = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'OG', 'HG', 'C', 'O', 'OXT']
                      'name': ['N', 'H', 'CH1', 'CH2', 'OA', 'H', 'C', 'O', 'O']}
                     )
 
-bSERT = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'def': ['']}
+
+bSERT = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'C', 'C'],
+                     'aj': ['CA', 'CB', 'C', 'OG', 'O', '+N'],
+                     'def': ['gb_21', 'gb_27', 'gb_27', 'gb_18', 'gb_5', 'gb_10']}
                     )
 
-aSERT = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'ak': [''],
-                     'def': ['']}
+aSERT = pd.DataFrame({'ai': ['-C', 'N', 'N', 'CB', 'CA', 'CA', 'CA', 'O'],
+                     'aj': ['N', 'CA', 'CA', 'CA', 'CB', 'C', 'C', 'C'],
+                     'ak': ['CA', 'CB', 'C', 'C', 'OG', 'O', '+N', '+N'],
+                     'def': ['ga_31', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_30', 'ga_19', 'ga_33']}
                     )
 
 #dSERT = pd.DataFrame({'ai': [''],
@@ -281,11 +282,11 @@ aSERT = pd.DataFrame({'ai': [''],
 #                     'def': ['']}
 #                    )
 
-iSERT = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'ak': [''],
-                     'al': [''],
-                     'def': ['']}
+iSERT = pd.DataFrame({'ai': ['CA', 'C'],
+                     'aj': ['N', 'CA'],
+                     'ak': ['C', '+N'],
+                     'al': ['CB', 'O'],
+                     'def': ['gi_2', 'gi_1']}
                     )
 
 SERT.to_dict()
@@ -295,15 +296,16 @@ PRO = pd.DataFrame({'type': ['N', 'CA', 'CB', 'CG', 'CD', 'C', 'O'],
                     'name': ['N', 'CH1', 'CH2r', 'CH2r', 'CH2r', 'C', 'O']}
                    )
 
-bPRO = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'def': ['']}
+bPRO = pd.DataFrame({'ai': ['N', 'N', 'CA', 'CA', 'CB', 'CG', 'C', 'C'],
+                     'aj': ['CA', 'CD', 'CB', 'C', 'CG', 'CD', 'O', '+N'],
+                     'def': ['gb_21', 'gb_21', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_5', 'gb_10']}
                     )
 
-aPRO = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'ak': [''],
-                     'def': ['']}
+aPRO = pd.DataFrame({'ai': ['-C', '-C', 'CA', 'N', 'N', 'CB', 'CA', 'CB', 'N', 'CA', 'CA', 'O'],
+                     'aj': ['N', 'N', 'N', 'CA', 'CA', 'CA', 'CB', 'CG', 'CD', 'C', 'C', 'C'],
+                     'ak': ['CA', 'CD', 'CD', 'CB', 'C', 'C', 'CG', 'CD', 'O', '+N', '+N'],
+                     'def': ['ga_31', 'ga_31', 'ga_21', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_30',
+                             'ga_19', 'ga_33', ]}
                     )
 
 #dPRO = pd.DataFrame({'ai': [''],
@@ -313,10 +315,10 @@ aPRO = pd.DataFrame({'ai': [''],
 #                     'def': ['']}
 #                    )
 
-iPRO = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'ak': [''],
-                     'al': [''],
+iPRO = pd.DataFrame({'ai': ['N', 'CA', 'C'],
+                     'aj': ['-C', 'N', 'CA'],
+                     'ak': ['CA', 'C', '+N'],
+                     'al': ['CD', 'CB', 'O'],
                      'def': ['']}
                     )
 
