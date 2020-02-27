@@ -142,7 +142,7 @@ aTYR = pd.DataFrame({'ai': ['-C', 'N', 'N', 'CB', 'CA', 'CB', 'CB', 'CD1', 'CG',
                      'ak': ['CA', 'CB', 'C', 'C', 'CG', 'CD1', 'CD2', 'CD2', 'CE1', 'CE2', 'CZ', 'CZ', 'CE2', 'OH',
                             'OH', 'O', '+N', '+N'],
                      'def': ['ga_31', 'ga_13', 'ga_13', 'ga_13', 'ga_15', 'ga_27', 'ga_27', 'ga_27', 'ga_27', 'ga_27',
-                             'ga_27', 'ga_27', 'ga_27', 'ga_27', 'ga_27', 'ga_19', 'ga_33']}
+                             'ga_27', 'ga_27', 'ga_27', 'ga_27', 'ga_27', 'ga_30', 'ga_19', 'ga_33']}
                     )
 
 #dTYR = pd.DataFrame({'ai': [''],
@@ -207,7 +207,8 @@ bLEU = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'CG', 'CG', 'C', 'C'],
 aLEU = pd.DataFrame({'ai': ['-C', 'N', 'N', 'CB', 'CA', 'CB', 'CB', 'CD1', 'CA', 'CA', 'O'],
                      'aj': ['N', 'CA', 'CA', 'CA', 'CB', 'CG', 'CG', 'CG', 'C', 'C', 'C'],
                      'ak': ['CA', 'CB', 'C', 'C', 'CG', 'CD1', 'CD2', 'CD2', 'O', '+N', '+N'],
-                     'def': ['ga_31', 'ga_13', 'ga_13', 'ga_13', 'ga_15', 'ga_15', 'ga_15', 'ga_30', 'ga_19', 'ga_33']}
+                     'def': ['ga_31', 'ga_13', 'ga_13', 'ga_13', 'ga_15', 'ga_15', 'ga_15', 'ga_15', 'ga_30', 'ga_19',
+                             'ga_33']}
                     )
 
 #dLEU = pd.DataFrame({'ai': [''],
@@ -303,9 +304,9 @@ bPRO = pd.DataFrame({'ai': ['N', 'N', 'CA', 'CA', 'CB', 'CG', 'C', 'C'],
 
 aPRO = pd.DataFrame({'ai': ['-C', '-C', 'CA', 'N', 'N', 'CB', 'CA', 'CB', 'N', 'CA', 'CA', 'O'],
                      'aj': ['N', 'N', 'N', 'CA', 'CA', 'CA', 'CB', 'CG', 'CD', 'C', 'C', 'C'],
-                     'ak': ['CA', 'CD', 'CD', 'CB', 'C', 'C', 'CG', 'CD', 'O', '+N', '+N'],
+                     'ak': ['CA', 'CD', 'CD', 'CB', 'C', 'C', 'CG', 'CD', 'CG', 'O', '+N', '+N'],
                      'def': ['ga_31', 'ga_31', 'ga_21', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_30',
-                             'ga_19', 'ga_33', ]}
+                             'ga_19', 'ga_33']}
                     )
 
 #dPRO = pd.DataFrame({'ai': [''],
@@ -319,7 +320,7 @@ iPRO = pd.DataFrame({'ai': ['N', 'CA', 'C'],
                      'aj': ['-C', 'N', 'CA'],
                      'ak': ['CA', 'C', '+N'],
                      'al': ['CD', 'CB', 'O'],
-                     'def': ['']}
+                     'def': ['gi_1', 'gi_2', 'gi_1']}
                     )
 
 PRO.to_dict()

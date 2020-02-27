@@ -3,6 +3,10 @@ from functions import *
 from output import *
 from atomtypes_aa_definitions import *
 
+# SAREBBE DA RIFARE LA GESTIONE DELL'INPUT. IN QUESTO MODO VIENE LETTO TUTTO UNA VOLTA, MODIFICATO UNA VOLTA E POI
+# LE DIFFERENZE STANNO NELL'OUTPUT
+
+
 # This first part is derived from PSCRIPT_ATP_TOP.PY
 # which creates the bonds, angles and dihedrals FROM THE PEPTIDE SMOG to paste into the new topology file
 # Topology bonds, angles and dihedrals
@@ -12,23 +16,14 @@ print('Topology atoms, bonds, angles and dihedrals')
 
 write_topology_atoms(read_pep_atoms())
 
-# vimdiff ok
-
 top_bonds = make_topology_bonds(read_pep_bonds())
 write_topology_bonds(top_bonds)
-
-# vimdiff ok
 
 top_angles = make_topology_angles(read_pep_angles())
 write_topology_angles(top_angles)
 
-# vimdiff ok
-
 top_dihedrals = make_topology_dihedrals(read_pep_dihedrals())
 write_topology_dihedrals(top_dihedrals)
-
-# vimdiff ok
-# ok up to here after script reorganization
 
 print('Topology files created')
 print('')
@@ -42,10 +37,8 @@ print('atomtype.atp creation')
 
 pep_atoms = read_pep_atoms()
 atp, atomtypes, dict_pep_atomtypes = make_atomtypes_and_dict(pep_atoms)
-# DICTIONARY MASS
-write_atomtypes_atp(atp)
 
-# vimdiff ok, cambiate tutte le masse
+write_atomtypes_atp(atp)
 
 print('atomtypes.atp written')
 print('')
@@ -66,11 +59,11 @@ pep_ff_angles = ffbonded_angles(pep_angles, dict_pep_atomtypes)
 
 pep_dihedrals = read_pep_dihedrals()
 pep_ff_dihedrals = ffbonded_dihedrals(pep_dihedrals, dict_pep_atomtypes)
+
 write_pep_ffbonded(pep_ff_bonds, pep_ff_angles, pep_ff_dihedrals)
 
 print('Peptide ffbonded.itp created')
 print('')
-# vimdiff ok
 
 # Nonbonded preparation
 print('Preparing the peptide ffnonbonded.itp')
@@ -79,14 +72,13 @@ print('Preparing the peptide ffnonbonded.itp')
 # Preparing the pep_pairs
 pep_pairs = read_pep_pairs()
 pep_ff_pairs = ffnonbonded_pep_pairs(pep_pairs, dict_pep_atomtypes)
+
 write_pep_ffnonbonded(atomtypes, pep_ff_pairs)
 
 print('Peptide ffnonbonded.itp created')
 print('')
 print('Peptide topology to paste and FF ready!!')
 print('')
-
-# vimdiff ok, cambiati massa e c12
 
 print('Preparing the fibril ffbonded.itp')
 
@@ -119,10 +111,8 @@ print('Preparation of fibril ffnonbonded.itp')
 # OCCHIO A QUESTA PARTE PERCHE CI SONO DELLE DIFFERENZE NEL PAIRS
 fib_pairs = read_fib_pairs()
 fib_ff_pairs = ffnonbonded_fib_pairs(fib_pairs, dict_fib_atomtypes)
-# DICTIONARY C12
-write_fib_ffnonbonded(atomtypes, fib_ff_pairs)
 
-# vimdiff ok
+write_fib_ffnonbonded(atomtypes, fib_ff_pairs)
 
 print('Fibril ffnonbonded.itp created')
 print('')
@@ -133,8 +123,6 @@ print('Merge ffbonded.itp preparation')
 merge_dihedrals = ffbonded_merge_dihedrals(pep_dihedrals, fib_dihedrals, dict_pep_atomtypes, dict_fib_atomtypes)
 write_merge_ffbonded(pep_ff_bonds, pep_ff_angles, merge_dihedrals)
 
-# vimdiff ok
-
 print('Merge ffbonded.itp created')
 print('')
 
@@ -142,8 +130,6 @@ print('Merge ffnonbonded.itp preparation')
 
 merge_pairs = ffnonbonded_merge_pairs(pep_pairs, fib_pairs, dict_pep_atomtypes, dict_fib_atomtypes)
 write_merge_ffnonbonded(atomtypes, merge_pairs)
-
-# vimdiff ok
 
 print('Merge ffnonbonded.itp created')
 print('')

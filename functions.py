@@ -11,14 +11,11 @@ def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     # print ("[ atomtypes ] of ffnonbonded")
     # This function prepare the file for ffnonbonded of the peptide
     # Insertion of information in atomtypes
-    print(atomtypes)
     dict_atomtypes = atomtypes.set_index("; nr")["type"].to_dict()
     atomtypes['at.group'] = atomtypes['residue'] + '_' + atomtypes['atom']
-    print(atomtypes)
     atomtypes['at.group'].replace(gromos_aa, inplace = True)
     atomtypes.insert(3, 'at.num', 4)
     atomtypes['at.num'] = atomtypes['at.group'].map(gromos_atp['at.num'])
-    print(atomtypes)
     atomtypes.insert(4, 'mass', 5)
     atomtypes['mass'] = atomtypes['at.group'].map(gromos_atp['mass'])
     atomtypes["charge"] = '0.000000'
@@ -26,7 +23,6 @@ def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     atomtypes["ptype"] = 'A'
     atomtypes['c6'] = '0.00000e+00'
     atomtypes['c12'] = atomtypes['at.group'].map(gromos_atp['c12'])
-    print(atomtypes)
     c12_notation = atomtypes["c12"].map(lambda x:'{:.6e}'.format(x))
     atomtypes = atomtypes.assign(c12 = c12_notation)
     atomtypes.drop(columns = ['; nr', 'resnr', 'residue', 'atom', 'cgnr', 'at.group'], inplace = True)
@@ -74,7 +70,8 @@ def make_topology_dihedrals(top_dihedrals):
 
 # Functions to prepare the bonds, angles and dihedrals for the ffbonded.itp creation
 
-def ffbonded_bonds(bonds, dict_atomtypes):
+def ffbonded_bonds(inp_bonds, dict_atomtypes):
+    bonds = inp_bonds.copy()
     # Changing the atomnumber with the atomtype defined in the dictionary
     bonds[";ai"].replace(dict_atomtypes, inplace = True)
     bonds["aj"].replace(dict_atomtypes, inplace = True)
@@ -91,11 +88,11 @@ def ffbonded_bonds(bonds, dict_atomtypes):
     bonds = bonds.assign(r0 = r0_notation)
     # Ennesima definizione delle colonne
     bonds.columns = ["; i", "j", "func", "b0", "kb"]
-    print(bonds)
     return bonds
 
 
-def ffbonded_angles(angles, dict_atomtypes):
+def ffbonded_angles(inp_angles, dict_atomtypes):
+    angles = inp_angles.copy()
     # Changing the atomnumber with the atomtype defined in the dictionary
     angles[";ai"].replace(dict_atomtypes, inplace = True)
     angles["aj"].replace(dict_atomtypes, inplace = True)
@@ -116,7 +113,8 @@ def ffbonded_angles(angles, dict_atomtypes):
     return angles
 
 
-def ffbonded_dihedrals(dihedrals, dict_atomtypes):
+def ffbonded_dihedrals(inp_dihedrals, dict_atomtypes):
+    dihedrals = inp_dihedrals.copy()
     # Changing the atomnumber with the atomtype defined in the dictionary
     dihedrals[";ai"].replace(dict_atomtypes, inplace = True)
     dihedrals["aj"].replace(dict_atomtypes, inplace = True)
@@ -141,10 +139,12 @@ def ffbonded_dihedrals(dihedrals, dict_atomtypes):
 # This is for the merge peptide + fibril, which is quite similar but there are a few lines more
 
 
-def ffbonded_merge_dihedrals(pep_dihedrals, fib_dihedrals, dict_pep_atomtypes, dict_fib_atomtypes):
+def ffbonded_merge_dihedrals(inp_pep_dihedrals, inp_fib_dihedrals, dict_pep_atomtypes, dict_fib_atomtypes):
     # This function is used to calculate dihedrals when merging the FF of peptide and fibril
     # Changing the atomnumber with the atomtype defined in the dictionary
     # Peptide input handling
+    pep_dihedrals = inp_pep_dihedrals.copy()
+    fib_dihedrals = inp_fib_dihedrals.copy()
     pep_dihedrals[";ai"].replace(dict_pep_atomtypes, inplace = True)
     pep_dihedrals["aj"].replace(dict_pep_atomtypes, inplace = True)
     pep_dihedrals["ak"].replace(dict_pep_atomtypes, inplace = True)
@@ -191,7 +191,8 @@ def ffbonded_merge_dihedrals(pep_dihedrals, fib_dihedrals, dict_pep_atomtypes, d
     return merge_dihedrals
 
 
-def ffnonbonded_pep_pairs(pep_pairs, dict_pep_atomtypes):
+def ffnonbonded_pep_pairs(inp_pep_pairs, dict_pep_atomtypes):
+    pep_pairs = inp_pep_pairs.copy()
     pep_pairs[";ai"].replace(dict_pep_atomtypes, inplace = True)
     pep_pairs["aj"].replace(dict_pep_atomtypes, inplace = True)
     # Cose per farlo funzionare
@@ -233,7 +234,8 @@ def ffnonbonded_pep_pairs(pep_pairs, dict_pep_atomtypes):
     return pep_pairs
 
 
-def ffnonbonded_fib_pairs(fib_pairs, dict_atomtypes):
+def ffnonbonded_fib_pairs(inp_fib_pairs, dict_atomtypes):
+    fib_pairs = inp_fib_pairs.copy()
     fib_pairs[";ai"].replace(dict_atomtypes, inplace = True)
     fib_pairs["aj"].replace(dict_atomtypes, inplace = True)
     # Cose per farlo funzionare
@@ -310,7 +312,9 @@ def ffnonbonded_fib_pairs(fib_pairs, dict_atomtypes):
 # This function is similar to the previous one
 # however it appends also the values for the merged ff pairs
 
-def ffnonbonded_merge_pairs(pep_pairs, fib_pairs, dict_pep_atomtypes, dict_fib_atomtypes):
+def ffnonbonded_merge_pairs(inp_pep_pairs, inp_fib_pairs, dict_pep_atomtypes, dict_fib_atomtypes):
+    pep_pairs = inp_pep_pairs.copy()
+    fib_pairs = inp_fib_pairs.copy()
     # This script allow to merge the pairs of peptide and fibril.
     # The main difference between the other two pairs function is that peptide C6 and C12 are reweighted.
     # This is because SMOG normalize the LJ potential based on the total number of contacts.
@@ -325,7 +329,7 @@ def ffnonbonded_merge_pairs(pep_pairs, fib_pairs, dict_pep_atomtypes, dict_fib_a
     pep_pairs['B'] = pep_pairs['B'] * (300 / 70)
 
     # Fibril input handling
-    fib_pairs['ai'].replace(dict_fib_atomtypes, inplace = True)
+    fib_pairs[';ai'].replace(dict_fib_atomtypes, inplace = True)
     fib_pairs["aj"].replace(dict_fib_atomtypes, inplace = True)
     fib_pairs.to_string(index = False)
     fib_pairs.columns = ["ai", "aj", "type", "A", "B"]
