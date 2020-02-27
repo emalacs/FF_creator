@@ -28,9 +28,6 @@ write_topology_dihedrals(top_dihedrals)
 print('Topology files created')
 print('')
 
-# This script is derived from PSCRIPT_FF.PY
-# which taking the bonds, angles and bonds from the PEPTIDE SMOG and prepare the FF
-
 # atomtype definition
 
 print('atomtype.atp creation')
