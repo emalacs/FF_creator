@@ -333,20 +333,20 @@ for res, resn in zip(reslist, reslistname):
         str = resn + '_' + res.iloc[i, 0]
         gromos_aa[str] = res.iloc[i, 1]
 
-bALA = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'def': ['']}
-                    )
+#bALA = pd.DataFrame({'ai': [''],
+#                     'aj': [''],
+#                     'def': ['']}
+#                    )
 
-aALA = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'ak': [''],
-                     'def': ['']}
-                    )
+#aALA = pd.DataFrame({'ai': [''],
+#                     'aj': [''],
+#                     'ak': [''],
+#                     'def': ['']}
+#                    )
 
-aALA = pd.DataFrame({'ai': [''],
-                     'aj': [''],
-                     'ak': [''],
-                     'al': [''],
-                     'def': ['']}
-                    )
+#aALA = pd.DataFrame({'ai': [''],
+#                     'aj': [''],
+#                     'ak': [''],
+#                     'al': [''],
+#                     'def': ['']}
+#                    )

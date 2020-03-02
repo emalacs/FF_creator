@@ -10,9 +10,11 @@ from atomtypes_aa_definitions import *
 def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     # print ("[ atomtypes ] of ffnonbonded")
     # This function prepare the file for ffnonbonded of the peptide
-    # Insertion of information in atomtypes
+    # Creation of the atomtypes dictionary
     dict_atomtypes = atomtypes.set_index("; nr")["type"].to_dict()
+    # Handling the information from the topology atomtypes
     atomtypes['at.group'] = atomtypes['residue'] + '_' + atomtypes['atom']
+    # Addition of the information from gromos FF (gromos_atp from atomtypes_aa_definitions.py)
     atomtypes['at.group'].replace(gromos_aa, inplace = True)
     atomtypes.insert(3, 'at.num', 4)
     atomtypes['at.num'] = atomtypes['at.group'].map(gromos_atp['at.num'])
@@ -23,17 +25,15 @@ def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     atomtypes["ptype"] = 'A'
     atomtypes['c6'] = '0.00000e+00'
     atomtypes['c12'] = atomtypes['at.group'].map(gromos_atp['c12'])
+    # Handling the scientific notation
     c12_notation = atomtypes["c12"].map(lambda x:'{:.6e}'.format(x))
+    # Removing all the unnecessary columns or duplicated columns in order to prepare the atomtypes for ffnonbonded.itp
     atomtypes = atomtypes.assign(c12 = c12_notation)
     atomtypes.drop(columns = ['; nr', 'resnr', 'residue', 'atom', 'cgnr', 'at.group'], inplace = True)
     atomtypes.rename(columns = {'type':'; type'}, inplace = True)
-    # As expected this drop duplicates does not bother the peptide FF
-    # Anche se a dire il vero gia ho fatto un drop duplicates
-    # OCCHIO QUI
-
+    # Since this function is made also for fibrils, a drop duplicate is required, but does not affect the peptide FF
     atomtypes = atomtypes.drop_duplicates(subset = '; type', keep = 'first')
-
-    # This part returns the atomtypes.atp
+    # This last function creates the atomtype for atomtypes.atp
     atp = pd.DataFrame(atomtypes, columns = ['; type', 'mass'])
     return atp, atomtypes, dict_atomtypes
 
@@ -63,21 +63,22 @@ def make_topology_dihedrals(top_dihedrals):
     top_dihedrals["phi0"] = ""
     top_dihedrals["Kd"] = ""
     top_dihedrals["mult"] = ""
-    # the double dihedrals MUST be removed also in the topology
+    # Dihedrals are duplicated and therefore it is necessary to remove them also in the topology
     top_dihedrals = top_dihedrals.drop_duplicates(subset = [';ai', 'aj', 'ak', 'al'], keep = 'first')
     return top_dihedrals
 
 
 # Functions to prepare the bonds, angles and dihedrals for the ffbonded.itp creation
 
-def ffbonded_bonds(inp_bonds, dict_atomtypes):
-    bonds = inp_bonds.copy()
+def ffbonded_bonds(bonds, dict_atomtypes):
+    #bonds = inp_bonds.copy()
     # Changing the atomnumber with the atomtype defined in the dictionary
     bonds[";ai"].replace(dict_atomtypes, inplace = True)
     bonds["aj"].replace(dict_atomtypes, inplace = True)
-    # Cose per farlo funzionare
     bonds.to_string(index = False)
     #print(f'bonds\n{bonds}')
+    # Here we are rescaling the kb to work at 300 K, more or less
+    # This quick and dirty step allow us to raise the temperature and have a proper Langevin behaviour
     bonds['kb'] = bonds['kb'] * (300 / 70)
     #print(f'bonds\n{bonds}')
     # Separazione delle colonne con dei numeri per la notazione scientifica
@@ -91,15 +92,16 @@ def ffbonded_bonds(inp_bonds, dict_atomtypes):
     return bonds
 
 
-def ffbonded_angles(inp_angles, dict_atomtypes):
-    angles = inp_angles.copy()
+def ffbonded_angles(angles, dict_atomtypes):
+    #angles = inp_angles.copy()
     # Changing the atomnumber with the atomtype defined in the dictionary
     angles[";ai"].replace(dict_atomtypes, inplace = True)
     angles["aj"].replace(dict_atomtypes, inplace = True)
     angles["ak"].replace(dict_atomtypes, inplace = True)
-    # Cose per farlo funzionare
     angles.to_string(index = False)
     #print(f'angles\n{angles}')
+    # Here we are rescaling the kb to work at 300 K, more or less
+    # This quick and dirty step allow us to raise the temperature and have a proper Langevin behaviour
     angles['Ka'] = angles['Ka'] * (300 / 70)
     #print(f'angles\n{angles}')
     # Separazione delle colonne con dei numeri per la notazione scientifica
@@ -113,15 +115,16 @@ def ffbonded_angles(inp_angles, dict_atomtypes):
     return angles
 
 
-def ffbonded_dihedrals(inp_dihedrals, dict_atomtypes):
-    dihedrals = inp_dihedrals.copy()
+def ffbonded_dihedrals(dihedrals, dict_atomtypes):
+    #dihedrals = inp_dihedrals.copy()
     # Changing the atomnumber with the atomtype defined in the dictionary
     dihedrals[";ai"].replace(dict_atomtypes, inplace = True)
     dihedrals["aj"].replace(dict_atomtypes, inplace = True)
     dihedrals["ak"].replace(dict_atomtypes, inplace = True)
     dihedrals["al"].replace(dict_atomtypes, inplace = True)
-    # Cose per farlo funzionare
     dihedrals.to_string(index = False)
+    # Here we are rescaling the kb to work at 300 K, more or less
+    # This quick and dirty step allow us to raise the temperature and have a proper Langevin behaviour
     dihedrals['Kd'] = dihedrals['Kd'] * (300 / 70)
     # Separazione delle colonne con dei numeri per la notazione scientifica
     phi0_notation = dihedrals["phi0"].map(lambda x:'{:.9e}'.format(x))
@@ -139,18 +142,19 @@ def ffbonded_dihedrals(inp_dihedrals, dict_atomtypes):
 # This is for the merge peptide + fibril, which is quite similar but there are a few lines more
 
 
-def ffbonded_merge_dihedrals(inp_pep_dihedrals, inp_fib_dihedrals, dict_pep_atomtypes, dict_fib_atomtypes):
+def ffbonded_merge_dihedrals(pep_dihedrals, fib_dihedrals, dict_pep_atomtypes, dict_fib_atomtypes):
     # This function is used to calculate dihedrals when merging the FF of peptide and fibril
     # Changing the atomnumber with the atomtype defined in the dictionary
+
     # Peptide input handling
-    pep_dihedrals = inp_pep_dihedrals.copy()
-    fib_dihedrals = inp_fib_dihedrals.copy()
+    #pep_dihedrals = inp_pep_dihedrals.copy()
+    #fib_dihedrals = inp_fib_dihedrals.copy()
     pep_dihedrals[";ai"].replace(dict_pep_atomtypes, inplace = True)
     pep_dihedrals["aj"].replace(dict_pep_atomtypes, inplace = True)
     pep_dihedrals["ak"].replace(dict_pep_atomtypes, inplace = True)
     pep_dihedrals["al"].replace(dict_pep_atomtypes, inplace = True)
-    # Fibril input handling
 
+    # Fibril input handling
     fib_dihedrals[";ai"].replace(dict_fib_atomtypes, inplace = True)
     fib_dihedrals["aj"].replace(dict_fib_atomtypes, inplace = True)
     fib_dihedrals["ak"].replace(dict_fib_atomtypes, inplace = True)
@@ -170,15 +174,18 @@ def ffbonded_merge_dihedrals(inp_pep_dihedrals, inp_fib_dihedrals, dict_pep_atom
     fib_kd_1.is_copy = False
     pep_kd_1.loc[:, 'Kd'] = pep_kd_1.loc[:, 'Kd'].divide(2)
     fib_kd_1.loc[:, 'Kd'] = fib_kd_1.loc[:, 'Kd'].divide(2)
-    # QUESTI DUE COMANDI SONO QUELLI ORIGINALI PRIMA DELL'OTTIMIZZAZIONE COPY WARNING
-    # pep_kd_1['Kd'] = pep_kd_1['Kd'].divide(2)
-    # fib_kd_1['Kd'] = fib_kd_1['Kd'].divide(2)
+
     # Having the half kd_1 of peptide and fibril appending peptide kd_1, kd_2 and fibril kd_1
     merge_pep_dihedrals = pep_kd_1.append(pep_kd_2, sort = False, ignore_index = True)
     merge_dihedrals = merge_pep_dihedrals.append(fib_kd_1, sort = False, ignore_index = True)
-    # Here is the common part of the dihedrals for peptide and fibril
+
+    # Here starts the common part of the dihedrals for peptide and fibril, which is merge from now on
     merge_dihedrals.to_string(index = False)
+    # Here we are rescaling the kb to work at 300 K, more or less
+    # This quick and dirty step allow us to raise the temperature and have a proper Langevin behaviour
     merge_dihedrals['Kd'] = merge_dihedrals['Kd'] * (300 / 70)
+
+    # This step is required for the scientific notation
     phi0_notation = merge_dihedrals["phi0"].map(lambda x:'{:.9e}'.format(x))
     kd_notation = merge_dihedrals["Kd"].map(lambda x:'{:.9e}'.format(x))
     merge_dihedrals = merge_dihedrals.assign(phi0 = phi0_notation)
@@ -186,16 +193,15 @@ def ffbonded_merge_dihedrals(inp_pep_dihedrals, inp_fib_dihedrals, dict_pep_atom
     merge_dihedrals["func"] = merge_dihedrals["func"].replace(1, 9)
     # This step is required since gromacs wants the dihedrals sorted by type
     merge_dihedrals.sort_values(by = [';ai', 'aj', 'ak', 'al'], inplace = True)
-    # Ennesima definizione delle colonne
+    # Column renaming
     merge_dihedrals.columns = [";  i", "j", "k", "l", "func", "phi", "kd", "mult"]
     return merge_dihedrals
 
 
-def ffnonbonded_pep_pairs(inp_pep_pairs, dict_pep_atomtypes):
-    pep_pairs = inp_pep_pairs.copy()
+def ffnonbonded_pep_pairs(pep_pairs, dict_pep_atomtypes):
+    #pep_pairs = inp_pep_pairs.copy()
     pep_pairs[";ai"].replace(dict_pep_atomtypes, inplace = True)
     pep_pairs["aj"].replace(dict_pep_atomtypes, inplace = True)
-    # Cose per farlo funzionare
     pep_pairs.to_string(index = False)
     # Ennesima definizione delle colonne
     pep_pairs.columns = [";ai", "aj", "type", "A", "B"]
@@ -220,22 +226,22 @@ def ffnonbonded_pep_pairs(inp_pep_pairs, dict_pep_atomtypes):
     # fib_pairs_full['A'] = fib_pairs_full['A'] * (300/t_check)
     # fib_pairs_full['B'] = fib_pairs_full['B'] * (300/t_check)
 
+    # Here we are rescaling the kb to work at 300 K, more or less
+    # This quick and dirty step allow us to raise the temperature and have a proper Langevin behaviour
     pep_pairs['A'] = pep_pairs['A'] * (300 / 70)
     pep_pairs['B'] = pep_pairs['B'] * (300 / 70)
-    # print(fib_pairs_full)
 
-    # Notazione scientifica
+    # Scientific notation
     A_notation = pep_pairs["A"].map(lambda x:'{:.9e}'.format(x))
     B_notation = pep_pairs["B"].map(lambda x:'{:.9e}'.format(x))
     # Sostituzione delle colonne all'interno del dataframe
     pep_pairs = pep_pairs.assign(A = A_notation)
     pep_pairs = pep_pairs.assign(B = B_notation)
-    # print(pep_pairs)
     return pep_pairs
 
 
-def ffnonbonded_fib_pairs(inp_fib_pairs, dict_atomtypes):
-    fib_pairs = inp_fib_pairs.copy()
+def ffnonbonded_fib_pairs(fib_pairs, dict_atomtypes):
+    #fib_pairs = inp_fib_pairs.copy()
     fib_pairs[";ai"].replace(dict_atomtypes, inplace = True)
     fib_pairs["aj"].replace(dict_atomtypes, inplace = True)
     # Cose per farlo funzionare
@@ -312,9 +318,9 @@ def ffnonbonded_fib_pairs(inp_fib_pairs, dict_atomtypes):
 # This function is similar to the previous one
 # however it appends also the values for the merged ff pairs
 
-def ffnonbonded_merge_pairs(inp_pep_pairs, inp_fib_pairs, dict_pep_atomtypes, dict_fib_atomtypes):
-    pep_pairs = inp_pep_pairs.copy()
-    fib_pairs = inp_fib_pairs.copy()
+def ffnonbonded_merge_pairs(pep_pairs, fib_pairs, dict_pep_atomtypes, dict_fib_atomtypes):
+    #pep_pairs = inp_pep_pairs.copy()
+    #fib_pairs = inp_fib_pairs.copy()
     # This script allow to merge the pairs of peptide and fibril.
     # The main difference between the other two pairs function is that peptide C6 and C12 are reweighted.
     # This is because SMOG normalize the LJ potential based on the total number of contacts.
