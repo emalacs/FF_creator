@@ -13,7 +13,7 @@ s <- 's'
 cluster_size <- seq(from = 0, to = (ncol(dat) -1))
 cluster_mass <- replace(cluster_size, cluster_size==0, 1)
 cluster_mass[2]=0
-
+dat_index <- seq(from = 0, to = (ncol(dat) -1))
 
 
 #cluster_mass
@@ -39,7 +39,7 @@ dat <- cbind(dat, total = rowSums(is_a_fibril))
 #is_a_fibril
 
 #dat <- cbind(is_a_fibril$total)
-dat
+
 
 #is_a_fibril # ok
 
@@ -59,7 +59,6 @@ dat
 z <- data.matrix(dat)
 #colnames(z) <- NULL
 #rownames(z) <- NULL
-z
 #z <- t(z)*dat_index
 #z
 #z[,-2]
@@ -67,13 +66,13 @@ z
 #z <- z[,-20]
 #ncol(z)
 #nrow(z)
-hist3D(z = z, bty = "g", phi = 30, border = "gray" , space = 0.3, ticktype = "detailed", d = 2, theta = 45)
+hist3D(z = z, bty = "g", phi = 30, space = 0.3, ticktype = "detailed", d = 2, theta = 45)
 #text3D(x = 1:117, y = 1:117, z = 1:117, labels = rownames(z), add = TRUE)
 #length(dat_index)
 
-#for_plotly <- rbind(z, dat_index)
-#for_plotly
-#write.csv(for_plotly, "analysis/histo-matrix.csv")
+for_plotly <- rbind(z, dat_index)
+for_plotly
+write.csv(for_plotly, "analysis/histo-matrix.csv")
 #dat
 
 #ncol(dat)
