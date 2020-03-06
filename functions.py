@@ -10,13 +10,13 @@ from atomtypes_aa_definitions import *
 def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     # print ("[ atomtypes ] of ffnonbonded")
     # This function prepare the file for ffnonbonded of the peptide
-    #print(atomtypes)
+    # print(atomtypes)
     # Creation of a dictionary which associates the atom number to the aminoacid and the atom type
     aminores = atomtypes[['; nr', 'residue', 'atom']].copy()
     aminores['aminores'] = aminores['residue'] + '_' + aminores['atom']
-    #print(aminores)
+    # print(aminores)
     dict_aminores = aminores.set_index('; nr')['aminores'].to_dict()
-    #print(dict_aminores)
+    # print(dict_aminores)
     # Creation of the atomtypes dictionary
     dict_atomtypes = atomtypes.set_index("; nr")["type"].to_dict()
     # Handling the information from the topology atomtypes
@@ -77,7 +77,7 @@ def make_topology_dihedrals(top_dihedrals):
 
 # Functions to prepare the bonds, angles and dihedrals for the ffbonded.itp creation
 
-def ffbonded_bonds(bonds, dict_atomtypes, dict_aminores): # In this function I want to use the information from gromos
+def ffbonded_bonds(bonds, dict_atomtypes, dict_aminores):  # In this function I want to use the information from gromos
     # Changing the atomnumber with the atomtype defined in the dictionary
     bonds['ai_aminores'] = bonds[';ai']
     bonds['aj_aminores'] = bonds['aj']
@@ -93,23 +93,23 @@ def ffbonded_bonds(bonds, dict_atomtypes, dict_aminores): # In this function I w
     bonds['gromos_kb'] = bonds['bonds']
     bonds['gromos_b0'].replace(dict_gromos_bonds_len, inplace = True)
     bonds['gromos_kb'].replace(dict_gromos_bonds_force, inplace = True)
-    #print(f'bonds\n{bonds}')
+    # print(f'bonds\n{bonds}')
     bonds = bonds.drop(['r0', 'kb', 'bonds', 'aj_aminores', 'ai_aminores'], axis = 1)
     bonds.columns = ["; ai", "aj", "func", 'gromos_b0', 'gromos_kb']
-    print(bonds)
     return bonds
 
+
 def ffbonded_bonds_backup(bonds, dict_atomtypes):
-    #bonds = inp_bonds.copy()
+    # bonds = inp_bonds.copy()
     # Changing the atomnumber with the atomtype defined in the dictionary
     bonds[";ai"].replace(dict_atomtypes, inplace = True)
     bonds["aj"].replace(dict_atomtypes, inplace = True)
     bonds.to_string(index = False)
-    #print(f'bonds\n{bonds}')
+    # print(f'bonds\n{bonds}')
     # Here we are rescaling the kb to work at 300 K, more or less
     # This quick and dirty step allow us to raise the temperature and have a proper Langevin behaviour
     bonds['kb'] = bonds['kb'] * (300 / 70)
-    #print(f'bonds\n{bonds}')
+    # print(f'bonds\n{bonds}')
     # Separazione delle colonne con dei numeri per la notazione scientifica
     kb_notation = bonds["kb"].map(lambda x:'{:.9e}'.format(x))
     r0_notation = bonds["r0"].map(lambda x:'{:.9e}'.format(x))
@@ -122,7 +122,6 @@ def ffbonded_bonds_backup(bonds, dict_atomtypes):
 
 
 def ffbonded_angles(angles, dict_atomtypes, dict_aminores):
-    print(angles)
     # Changing the atomnumber with the atomtype defined in the dictionary
     angles['ai_aminores'] = angles[';ai']
     angles['aj_aminores'] = angles['aj']
@@ -130,7 +129,7 @@ def ffbonded_angles(angles, dict_atomtypes, dict_aminores):
     angles[";ai"].replace(dict_atomtypes, inplace = True)
     angles["aj"].replace(dict_atomtypes, inplace = True)
     angles["ak"].replace(dict_atomtypes, inplace = True)
-    
+
     # Replacing using the gromos FF definition instead the one coming from SMOG
     angles['ai_aminores'].replace(dict_aminores, inplace = True)
     angles['aj_aminores'].replace(dict_aminores, inplace = True)
@@ -140,25 +139,25 @@ def ffbonded_angles(angles, dict_atomtypes, dict_aminores):
     angles['angles'].replace(aa_angles, inplace = True)
     angles['gromos_th0'] = angles['angles']
     angles['gromos_ka'] = angles['angles']
-    angles['gromos_th0'].replace(dict_gromos_angles_len, inplace = True)
+    angles['gromos_th0'].replace(dict_gromos_angles_angle, inplace = True)
     angles['gromos_ka'].replace(dict_gromos_angles_force, inplace = True)
     angles = angles.drop(['th0', 'Ka', 'angles', 'aj_aminores', 'ai_aminores', 'ak_aminores'], axis = 1)
     angles.columns = ["; ai", "aj", 'ak', "func", 'gromos_th0', 'gromos_ka']
-    print(angles)
     return angles
 
+
 def ffbonded_angles_backup(angles, dict_atomtypes):
-    #angles = inp_angles.copy()
+    # angles = inp_angles.copy()
     # Changing the atomnumber with the atomtype defined in the dictionary
     angles[";ai"].replace(dict_atomtypes, inplace = True)
     angles["aj"].replace(dict_atomtypes, inplace = True)
     angles["ak"].replace(dict_atomtypes, inplace = True)
     angles.to_string(index = False)
-    #print(f'angles\n{angles}')
+    # print(f'angles\n{angles}')
     # Here we are rescaling the kb to work at 300 K, more or less
     # This quick and dirty step allow us to raise the temperature and have a proper Langevin behaviour
     angles['Ka'] = angles['Ka'] * (300 / 70)
-    #print(f'angles\n{angles}')
+    # print(f'angles\n{angles}')
     # Separazione delle colonne con dei numeri per la notazione scientifica
     th0_notation = angles["th0"].map(lambda x:'{:.9e}'.format(x))
     ka_notation = angles["Ka"].map(lambda x:'{:.9e}'.format(x))
@@ -169,8 +168,84 @@ def ffbonded_angles_backup(angles, dict_atomtypes):
     angles.columns = [";    i", "j", "k", "func", "th0", "Ka"]
     return angles
 
-def ffbonded_dihedrals(dihedrals, dict_atomtypes):
-    #dihedrals = inp_dihedrals.copy()
+
+def ffbonded_dihedrals(dihedrals, dict_atomtypes, dict_aminores):
+    print(dihedrals)
+    # Changing the atomnumber with the atomtype defined in the dictionary
+    dihedrals[";ai"].replace(dict_atomtypes, inplace = True)
+    dihedrals["aj"].replace(dict_atomtypes, inplace = True)
+    dihedrals["ak"].replace(dict_atomtypes, inplace = True)
+    dihedrals["al"].replace(dict_atomtypes, inplace = True)
+    # Here we are rescaling the kb to work at 300 K, more or less
+    # This quick and dirty step allow us to raise the temperature and have a proper Langevin behaviour
+    # I keep this string since the proper dihedrals (1) requires a rescale
+    dihedrals['Kd'] = dihedrals['Kd'] * (300 / 70)
+
+    # Separation of the impropers and the propers. The propers will be replaced by gromos values
+    proper_dihedrals = dihedrals.loc[dihedrals['func'] == 1]
+    improper_dihedrals = dihedrals.loc[dihedrals['func'] == 2]
+
+    # Replacing the impropers dihedrals information
+    # Changing the atomnumber with the atomtype defined in the dictionary
+    improper_dihedrals['ai_aminores'] = improper_dihedrals[';ai']
+    improper_dihedrals['aj_aminores'] = improper_dihedrals['aj']
+    improper_dihedrals['ak_aminores'] = improper_dihedrals['ak']
+    improper_dihedrals['al_aminores'] = improper_dihedrals['al']
+
+    # Replacing using the gromos FF definition instead the one coming from SMOG
+    improper_dihedrals['ai_aminores'].replace(dict_aminores, inplace = True)
+    improper_dihedrals['aj_aminores'].replace(dict_aminores, inplace = True)
+    improper_dihedrals['ak_aminores'].replace(dict_aminores, inplace = True)
+    improper_dihedrals['al_aminores'].replace(dict_aminores, inplace = True)
+    dihedrals.to_string(index = False)
+
+    improper_dihedrals['improper_dihedrals'] = improper_dihedrals['ai_aminores'] + '+' + improper_dihedrals[
+        'aj_aminores'] + '+' + improper_dihedrals['ak_aminores'] + '+' + improper_dihedrals['al_aminores']
+
+    improper_dihedrals['improper_dihedrals'].replace(aa_impropers, inplace = True)
+    improper_dihedrals['gromos_phi'] = improper_dihedrals['improper_dihedrals']
+    improper_dihedrals['gromos_phi'].replace(dict_gromos_impropers_dihe, inplace = True)
+    improper_dihedrals['gromos_kd'] = improper_dihedrals['improper_dihedrals']
+    improper_dihedrals['gromos_phi'].replace(dict_gromos_impropers_force, inplace = True)
+
+
+
+
+
+
+
+    #angles = angles.drop(['th0', 'Ka', 'angles', 'aj_aminores', 'ai_aminores', 'ak_aminores'], axis = 1)
+    #angles.columns = ["; ai", "aj", 'ak', "func", 'gromos_th0', 'gromos_ka']
+
+
+
+
+
+
+
+
+
+
+
+
+
+    print(improper_dihedrals)
+
+    # Separazione delle colonne con dei numeri per la notazione scientifica
+    phi0_notation = dihedrals["phi0"].map(lambda x:'{:.9e}'.format(x))
+    kd_notation = dihedrals["Kd"].map(lambda x:'{:.9e}'.format(x))
+    # Sostituzione delle colonne all'interno del dataframe
+    dihedrals = dihedrals.assign(phi0 = phi0_notation)
+    dihedrals = dihedrals.assign(Kd = kd_notation)
+    # Nei diedri e necessario sostituire l'1 con il 9 perche alcuni diedri vengono definiti due volte
+    dihedrals["func"] = dihedrals["func"].replace(1, 9)
+    # Ennesima definizione delle colonne
+    dihedrals.columns = [";  i", "j", "k", "l", "func", "phi", "kd", "mult"]
+    return dihedrals
+
+
+def ffbonded_dihedrals_backup(dihedrals, dict_atomtypes):
+    # dihedrals = inp_dihedrals.copy()
     # Changing the atomnumber with the atomtype defined in the dictionary
     dihedrals[";ai"].replace(dict_atomtypes, inplace = True)
     dihedrals["aj"].replace(dict_atomtypes, inplace = True)
@@ -201,8 +276,8 @@ def ffbonded_merge_dihedrals(pep_dihedrals, fib_dihedrals, dict_pep_atomtypes, d
     # Changing the atomnumber with the atomtype defined in the dictionary
 
     # Peptide input handling
-    #pep_dihedrals = inp_pep_dihedrals.copy()
-    #fib_dihedrals = inp_fib_dihedrals.copy()
+    # pep_dihedrals = inp_pep_dihedrals.copy()
+    # fib_dihedrals = inp_fib_dihedrals.copy()
     pep_dihedrals[";ai"].replace(dict_pep_atomtypes, inplace = True)
     pep_dihedrals["aj"].replace(dict_pep_atomtypes, inplace = True)
     pep_dihedrals["ak"].replace(dict_pep_atomtypes, inplace = True)
@@ -253,7 +328,7 @@ def ffbonded_merge_dihedrals(pep_dihedrals, fib_dihedrals, dict_pep_atomtypes, d
 
 
 def ffnonbonded_pep_pairs(pep_pairs, dict_pep_atomtypes):
-    #pep_pairs = inp_pep_pairs.copy()
+    # pep_pairs = inp_pep_pairs.copy()
     pep_pairs[";ai"].replace(dict_pep_atomtypes, inplace = True)
     pep_pairs["aj"].replace(dict_pep_atomtypes, inplace = True)
     pep_pairs.to_string(index = False)
@@ -295,7 +370,7 @@ def ffnonbonded_pep_pairs(pep_pairs, dict_pep_atomtypes):
 
 
 def ffnonbonded_fib_pairs(fib_pairs, dict_atomtypes):
-    #fib_pairs = inp_fib_pairs.copy()
+    # fib_pairs = inp_fib_pairs.copy()
     fib_pairs[";ai"].replace(dict_atomtypes, inplace = True)
     fib_pairs["aj"].replace(dict_atomtypes, inplace = True)
     # Cose per farlo funzionare
@@ -373,8 +448,8 @@ def ffnonbonded_fib_pairs(fib_pairs, dict_atomtypes):
 # however it appends also the values for the merged ff pairs
 
 def ffnonbonded_merge_pairs(pep_pairs, fib_pairs, dict_pep_atomtypes, dict_fib_atomtypes):
-    #pep_pairs = inp_pep_pairs.copy()
-    #fib_pairs = inp_fib_pairs.copy()
+    # pep_pairs = inp_pep_pairs.copy()
+    # fib_pairs = inp_fib_pairs.copy()
     # This script allow to merge the pairs of peptide and fibril.
     # The main difference between the other two pairs function is that peptide C6 and C12 are reweighted.
     # This is because SMOG normalize the LJ potential based on the total number of contacts.

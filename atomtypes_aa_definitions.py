@@ -39,12 +39,12 @@ dict_gromos_bonds_len = gromos_bonds.set_index('def')['len'].to_dict()
 gromos_angles = pd.DataFrame(
     {'def': ['ga_13', 'ga_15', 'ga_19', 'ga_27', 'ga_30', 'ga_31', 'ga_33'],
      'force': ['520.00', '530.00', '610.00', '560.00', '685.00', '700.00', '730.00'],
-     'len': ['109.50', '111.00', '115.00', '120.00', '121.00', '122.00', '124.00']
+     'angle': ['109.50', '111.00', '115.00', '120.00', '121.00', '122.00', '124.00']
     }
 )
 
 dict_gromos_angles_force = gromos_angles.set_index('def')['force'].to_dict()
-dict_gromos_angles_len = gromos_angles.set_index('def')['len'].to_dict()
+dict_gromos_angles_angle = gromos_angles.set_index('def')['angle'].to_dict()
 
 gromos_dihedrals = pd.DataFrame(
     {'def': [''],
@@ -56,12 +56,12 @@ gromos_dihedrals = pd.DataFrame(
 gromos_impropers = pd.DataFrame(
     {'def': ['gi_1', 'gi_2'],
      'force': ['167.42309', '334.84617'],
-     'len': ['0.0', '35.26439']
+     'dihe': ['0.0', '35.26439']
     }
 )
 
 dict_gromos_impropers_force = gromos_impropers.set_index('def')['force'].to_dict()
-dict_gromos_impropers_len = gromos_impropers.set_index('def')['len'].to_dict()
+dict_gromos_impropers_dihe = gromos_impropers.set_index('def')['dihe'].to_dict()
 
 
 # TTR sequence YTIAALLSPYS
@@ -579,6 +579,7 @@ iPRO_dict = iPRO.set_index('improper')['def'].to_dict()
 
 aa_bonds = {**bALA_dict, **bTYR_dict, **bILE_dict, **bLEU_dict, **bPRO_dict, **bSER_dict, **bSERT_dict, **bTHR_dict}
 aa_angles = {**aALA_dict, **aTYR_dict, **aILE_dict, **aLEU_dict, **aPRO_dict, **aSER_dict, **aSERT_dict, **aTHR_dict}
+aa_impropers = {**iALA_dict, **iTYR_dict, **iILE_dict, **iLEU_dict, **iPRO_dict, **iSER_dict, **iSERT_dict, **iTHR_dict}
 # print(aa_bonds)
 
 

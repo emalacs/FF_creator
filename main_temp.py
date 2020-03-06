@@ -55,7 +55,7 @@ pep_ff_bonds = ffbonded_bonds(read_pep_bonds(), dict_pep_atomtypes, dict_pep_ami
 pep_ff_angles = ffbonded_angles(read_pep_angles(), dict_pep_atomtypes, dict_pep_aminores)
 
 #pep_dihedrals = read_pep_dihedrals()
-pep_ff_dihedrals = ffbonded_dihedrals(read_pep_dihedrals(), dict_pep_atomtypes)
+pep_ff_dihedrals = ffbonded_dihedrals(read_pep_dihedrals(), dict_pep_atomtypes, dict_pep_aminores)
 
 write_pep_ffbonded(pep_ff_bonds, pep_ff_angles, pep_ff_dihedrals)
 
@@ -94,7 +94,7 @@ fib_ff_bonds = ffbonded_bonds(read_fib_bonds(), dict_fib_atomtypes, dict_fib_ami
 fib_ff_angles = ffbonded_angles(read_fib_angles(), dict_fib_atomtypes, dict_fib_aminores)
 
 #fib_dihedrals = read_fib_dihedrals()
-fib_ff_dihedrals = ffbonded_dihedrals(read_fib_dihedrals(), dict_fib_atomtypes)
+fib_ff_dihedrals = ffbonded_dihedrals(read_fib_dihedrals(), dict_fib_atomtypes, dict_fib_aminores)
 
 write_fib_ffbonded(fib_ff_bonds, fib_ff_angles, fib_ff_dihedrals)
 
