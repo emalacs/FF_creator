@@ -10,6 +10,13 @@ from atomtypes_aa_definitions import *
 def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     # print ("[ atomtypes ] of ffnonbonded")
     # This function prepare the file for ffnonbonded of the peptide
+    #print(atomtypes)
+    # Creation of a dictionary which associates the atom number to the aminoacid and the atom type
+    aminores = atomtypes[['; nr', 'residue', 'atom']].copy()
+    aminores['aminores'] = aminores['residue'] + '_' + aminores['atom']
+    #print(aminores)
+    dict_aminores = aminores.set_index('; nr')['aminores'].to_dict()
+    #print(dict_aminores)
     # Creation of the atomtypes dictionary
     dict_atomtypes = atomtypes.set_index("; nr")["type"].to_dict()
     # Handling the information from the topology atomtypes
@@ -35,7 +42,7 @@ def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     atomtypes = atomtypes.drop_duplicates(subset = '; type', keep = 'first')
     # This last function creates the atomtype for atomtypes.atp
     atp = pd.DataFrame(atomtypes, columns = ['; type', 'mass'])
-    return atp, atomtypes, dict_atomtypes
+    return atp, atomtypes, dict_atomtypes, dict_aminores
 
 
 # Function for topology
@@ -70,7 +77,40 @@ def make_topology_dihedrals(top_dihedrals):
 
 # Functions to prepare the bonds, angles and dihedrals for the ffbonded.itp creation
 
-def ffbonded_bonds(bonds, dict_atomtypes):
+def ffbonded_bonds(bonds, dict_atomtypes, dict_aminores): # In this function I want to use the information from gromos
+    # Changing the atomnumber with the atomtype defined in the dictionary
+    bonds['ai_aminores'] = bonds[';ai']
+    bonds['aj_aminores'] = bonds['aj']
+    bonds[";ai"].replace(dict_atomtypes, inplace = True)
+    bonds["aj"].replace(dict_atomtypes, inplace = True)
+    # Replacing using the gromos FF definition instead the one coming from SMOG
+    bonds['ai_aminores'].replace(dict_aminores, inplace = True)
+    bonds['aj_aminores'].replace(dict_aminores, inplace = True)
+    bonds.to_string(index = False)
+    bonds['bonds'] = bonds['ai_aminores'] + '+' + bonds['aj_aminores']
+    bonds['bonds'].replace(aa_bonds, inplace = True)
+    bonds['gromos_b0'] = bonds['bonds']
+    bonds['gromos_kb'] = bonds['bonds']
+    bonds['gromos_b0'].replace(dict_gromos_bonds_len, inplace = True)
+    bonds['gromos_kb'].replace(dict_gromos_bonds_force, inplace = True)
+    bonds = bonds.drop(['aj_aminores', 'ai_aminores'], axis = 1)
+    print(bonds)
+    #print(f'bonds\n{bonds}')
+    # Here we are rescaling the kb to work at 300 K, more or less
+    # This quick and dirty step allow us to raise the temperature and have a proper Langevin behaviour
+    bonds['kb'] = bonds['kb'] * (300 / 70)
+    #print(f'bonds\n{bonds}')
+    # Separazione delle colonne con dei numeri per la notazione scientifica
+    kb_notation = bonds["kb"].map(lambda x:'{:.9e}'.format(x))
+    r0_notation = bonds["r0"].map(lambda x:'{:.9e}'.format(x))
+    # Sostituzione delle colonne all'interno del dataframe
+    bonds = bonds.assign(kb = kb_notation)
+    bonds = bonds.assign(r0 = r0_notation)
+    # Ennesima definizione delle colonne
+    bonds.columns = ["; i", "j", "func", "b0", "kb", 'bonds', 'gromos_b0', 'gromos_kb']
+    return bonds
+
+def ffbonded_bonds_backup(bonds, dict_atomtypes):
     #bonds = inp_bonds.copy()
     # Changing the atomnumber with the atomtype defined in the dictionary
     bonds[";ai"].replace(dict_atomtypes, inplace = True)

@@ -33,7 +33,7 @@ print('')
 print('atomtype.atp creation')
 
 #pep_atoms = read_pep_atoms()
-atp, atomtypes, dict_pep_atomtypes = make_atomtypes_and_dict(read_pep_atoms())
+atp, atomtypes, dict_pep_atomtypes, dict_pep_aminores = make_atomtypes_and_dict(read_pep_atoms())
 
 write_atomtypes_atp(atp)
 
@@ -49,7 +49,7 @@ print('Preparing the peptide ffbonded.itp')
 
 # Covalent preparation
 #pep_bonds = read_pep_bonds()
-pep_ff_bonds = ffbonded_bonds(read_pep_bonds(), dict_pep_atomtypes)
+pep_ff_bonds = ffbonded_bonds(read_pep_bonds(), dict_pep_atomtypes, dict_pep_aminores)
 
 #pep_angles = read_pep_angles()
 pep_ff_angles = ffbonded_angles(read_pep_angles(), dict_pep_atomtypes)
@@ -82,13 +82,13 @@ print('Preparing the fibril ffbonded.itp')
 # Making a dictionary out of it to change the atomnumber to the atomtype
 # The dictionary is based on the fibril atoms
 #fib_atoms = read_fib_atoms()
-atp, atomtypes, dict_fib_atomtypes = make_atomtypes_and_dict(read_fib_atoms())
+atp, atomtypes, dict_fib_atomtypes, dict_fib_aminores = make_atomtypes_and_dict(read_fib_atoms())
 
 # vimdiff ok, sono lo stesso file che c'e nel peptide
 
 # Covalent preparation
 #fib_bonds = read_fib_bonds()
-fib_ff_bonds = ffbonded_bonds(read_fib_bonds(), dict_fib_atomtypes)
+fib_ff_bonds = ffbonded_bonds(read_fib_bonds(), dict_fib_atomtypes, dict_fib_aminores)
 
 #fib_angles = read_fib_angles()
 fib_ff_angles = ffbonded_angles(read_fib_angles(), dict_fib_atomtypes)

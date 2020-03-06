@@ -29,6 +29,10 @@ gromos_bonds = pd.DataFrame(
     }
 )
 
+# Dictionaries used to replace the SMOG definitions during the bonds creation.
+dict_gromos_bonds_force = gromos_bonds.set_index('def')['force'].to_dict()
+dict_gromos_bonds_len = gromos_bonds.set_index('def')['len'].to_dict()
+
 gromos_angles = pd.DataFrame(
     {'def': ['ga_13', 'ga_15', 'ga_19', 'ga_27', 'ga_30', 'ga_31', 'ga_33'],
      'force': ['520.00', '530.00', '610.00', '560.00', '685.00', '700.00', '730.00'],
@@ -566,7 +570,8 @@ iPRO_dict = iPRO.set_index('improper')['def'].to_dict()
 print(iPRO_dict)
 
 
-
+aa_bonds = {**bALA_dict, **bTYR_dict, **bILE_dict, **bLEU_dict, **bPRO_dict, **bSER_dict, **bSERT_dict, **bTHR_dict}
+print(aa_bonds)
 
 
 
