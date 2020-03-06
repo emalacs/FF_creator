@@ -93,21 +93,10 @@ def ffbonded_bonds(bonds, dict_atomtypes, dict_aminores): # In this function I w
     bonds['gromos_kb'] = bonds['bonds']
     bonds['gromos_b0'].replace(dict_gromos_bonds_len, inplace = True)
     bonds['gromos_kb'].replace(dict_gromos_bonds_force, inplace = True)
-    bonds = bonds.drop(['aj_aminores', 'ai_aminores'], axis = 1)
+    #print(f'bonds\n{bonds}')
+    bonds = bonds.drop(['r0', 'kb', 'bonds', 'aj_aminores', 'ai_aminores'], axis = 1)
+    bonds.columns = ["; ai", "aj", "func", 'gromos_b0', 'gromos_kb']
     print(bonds)
-    #print(f'bonds\n{bonds}')
-    # Here we are rescaling the kb to work at 300 K, more or less
-    # This quick and dirty step allow us to raise the temperature and have a proper Langevin behaviour
-    bonds['kb'] = bonds['kb'] * (300 / 70)
-    #print(f'bonds\n{bonds}')
-    # Separazione delle colonne con dei numeri per la notazione scientifica
-    kb_notation = bonds["kb"].map(lambda x:'{:.9e}'.format(x))
-    r0_notation = bonds["r0"].map(lambda x:'{:.9e}'.format(x))
-    # Sostituzione delle colonne all'interno del dataframe
-    bonds = bonds.assign(kb = kb_notation)
-    bonds = bonds.assign(r0 = r0_notation)
-    # Ennesima definizione delle colonne
-    bonds.columns = ["; i", "j", "func", "b0", "kb", 'bonds', 'gromos_b0', 'gromos_kb']
     return bonds
 
 def ffbonded_bonds_backup(bonds, dict_atomtypes):
@@ -132,7 +121,33 @@ def ffbonded_bonds_backup(bonds, dict_atomtypes):
     return bonds
 
 
-def ffbonded_angles(angles, dict_atomtypes):
+def ffbonded_angles(angles, dict_atomtypes, dict_aminores):
+    print(angles)
+    # Changing the atomnumber with the atomtype defined in the dictionary
+    angles['ai_aminores'] = angles[';ai']
+    angles['aj_aminores'] = angles['aj']
+    angles['ak_aminores'] = angles['ak']
+    angles[";ai"].replace(dict_atomtypes, inplace = True)
+    angles["aj"].replace(dict_atomtypes, inplace = True)
+    angles["ak"].replace(dict_atomtypes, inplace = True)
+    
+    # Replacing using the gromos FF definition instead the one coming from SMOG
+    angles['ai_aminores'].replace(dict_aminores, inplace = True)
+    angles['aj_aminores'].replace(dict_aminores, inplace = True)
+    angles['ak_aminores'].replace(dict_aminores, inplace = True)
+    angles.to_string(index = False)
+    angles['angles'] = angles['ai_aminores'] + '+' + angles['aj_aminores'] + '+' + angles['ak_aminores']
+    angles['angles'].replace(aa_angles, inplace = True)
+    angles['gromos_th0'] = angles['angles']
+    angles['gromos_ka'] = angles['angles']
+    angles['gromos_th0'].replace(dict_gromos_angles_len, inplace = True)
+    angles['gromos_ka'].replace(dict_gromos_angles_force, inplace = True)
+    angles = angles.drop(['th0', 'Ka', 'angles', 'aj_aminores', 'ai_aminores', 'ak_aminores'], axis = 1)
+    angles.columns = ["; ai", "aj", 'ak', "func", 'gromos_th0', 'gromos_ka']
+    print(angles)
+    return angles
+
+def ffbonded_angles_backup(angles, dict_atomtypes):
     #angles = inp_angles.copy()
     # Changing the atomnumber with the atomtype defined in the dictionary
     angles[";ai"].replace(dict_atomtypes, inplace = True)
@@ -153,7 +168,6 @@ def ffbonded_angles(angles, dict_atomtypes):
     # Ennesima definizione delle colonne
     angles.columns = [";    i", "j", "k", "func", "th0", "Ka"]
     return angles
-
 
 def ffbonded_dihedrals(dihedrals, dict_atomtypes):
     #dihedrals = inp_dihedrals.copy()
