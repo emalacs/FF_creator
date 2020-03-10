@@ -77,14 +77,13 @@ bALA = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'C', 'C'],
                      'aj': ['CA', 'CB', 'C', 'O', 'N+'],
                      'def': ['gb_21', 'gb_27', 'gb_27', 'gb_5', 'gb_10']}
                     )
-# print(bALA)
+
 bALA['ai'] = 'ALA_' + bALA['ai'].astype(str)
 bALA['aj'] = 'ALA_' + bALA['aj'].astype(str)
 bALA.insert(2, 'bond', 3)
 bALA['bond'] = bALA['ai'] + '+' + bALA['aj']
-# print(bALA)
+
 bALA_dict = bALA.set_index('bond')['def'].to_dict()
-# print(bALA_dict)
 
 # Alananine angles definition.
 aALA = pd.DataFrame({'ai': ['-C', 'N', 'N', 'CB', 'CA', 'CA', 'O'],
@@ -271,7 +270,7 @@ ILE = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'CG1', 'CG2', 'CD1', 'C', 'O'
 ILE.to_dict()
 
 bILE = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'CB', 'CG1', 'C', 'C'],
-                     'aj': ['CA', 'CB', 'C', 'CG1', 'CG2', 'CD', 'O', '+N'],
+                     'aj': ['CA', 'CB', 'C', 'CG1', 'CG2', 'CD1', 'O', '+N'],
                      'def': ['gb_21', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_27',  'gb_5',  'gb_10']}
                     )
 

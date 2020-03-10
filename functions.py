@@ -87,15 +87,21 @@ def ffbonded_bonds(bonds, dict_atomtypes, dict_aminores):  # In this function I 
     bonds['ai_aminores'].replace(dict_aminores, inplace = True)
     bonds['aj_aminores'].replace(dict_aminores, inplace = True)
     bonds.to_string(index = False)
+    print('bonds')
+    print(bonds.to_string())
     bonds['bonds'] = bonds['ai_aminores'] + '+' + bonds['aj_aminores']
     bonds['bonds'].replace(aa_bonds, inplace = True)
+    print(bonds.to_string())
     bonds['gromos_b0'] = bonds['bonds']
     bonds['gromos_kb'] = bonds['bonds']
+    print(bonds.to_string())
     bonds['gromos_b0'].replace(dict_gromos_bonds_len, inplace = True)
     bonds['gromos_kb'].replace(dict_gromos_bonds_force, inplace = True)
+    print(bonds.to_string())
     # print(f'bonds\n{bonds}')
     bonds = bonds.drop(['r0', 'kb', 'bonds', 'aj_aminores', 'ai_aminores'], axis = 1)
     bonds.columns = ["; ai", "aj", "func", 'gromos_b0', 'gromos_kb']
+    print(bonds.to_string())
     return bonds
 
 
@@ -139,6 +145,7 @@ def ffbonded_angles(angles, dict_atomtypes, dict_aminores):
     angles['angles'].replace(aa_angles, inplace = True)
     angles['gromos_th0'] = angles['angles']
     angles['gromos_ka'] = angles['angles']
+    print(angles)
     angles['gromos_th0'].replace(dict_gromos_angles_angle, inplace = True)
     angles['gromos_ka'].replace(dict_gromos_angles_force, inplace = True)
     angles = angles.drop(['th0', 'Ka', 'angles', 'aj_aminores', 'ai_aminores', 'ak_aminores'], axis = 1)
@@ -201,16 +208,20 @@ def ffbonded_dihedrals(dihedrals, dict_atomtypes, dict_aminores):
 
     improper_dihedrals['improper_dihedrals'] = improper_dihedrals['ai_aminores'] + '+' + improper_dihedrals[
         'aj_aminores'] + '+' + improper_dihedrals['ak_aminores'] + '+' + improper_dihedrals['al_aminores']
-
+    print(improper_dihedrals)
     improper_dihedrals['improper_dihedrals'].replace(aa_impropers, inplace = True)
+    print(improper_dihedrals)
     improper_dihedrals['gromos_phi'] = improper_dihedrals['improper_dihedrals']
     improper_dihedrals['gromos_phi'].replace(dict_gromos_impropers_dihe, inplace = True)
     improper_dihedrals['gromos_kd'] = improper_dihedrals['improper_dihedrals']
     improper_dihedrals['gromos_phi'].replace(dict_gromos_impropers_force, inplace = True)
 
-
-
-
+    #angles['gromos_th0'] = angles['angles']
+    #angles['gromos_ka'] = angles['angles']
+    #angles['gromos_th0'].replace(dict_gromos_angles_angle, inplace=True)
+    #angles['gromos_ka'].replace(dict_gromos_angles_force, inplace=True)
+    #angles = angles.drop(['th0', 'Ka', 'angles', 'aj_aminores', 'ai_aminores', 'ak_aminores'], axis=1)
+    #angles.columns = ["; ai", "aj", 'ak', "func", 'gromos_th0', 'gromos_ka']
 
 
 
