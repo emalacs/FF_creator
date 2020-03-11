@@ -29,7 +29,7 @@ gromos_bonds = pd.DataFrame(
     {'def': ['gb_5', 'gb_10', 'gb_13', 'gb_16', 'gb_18', 'gb_21', 'gb_27'],
      'force': ['1.6600e+07', '1.1800e+07', '1.0200e+07', '1.0800e+07', '8.1800e+06', '8.7100e+06', '7.1500+e06'],
      'len': ['0.1230', '0.1330', '0.1360', '0.1390', '0.1430', '0.1470', '0.1530']
-    }
+     }
 )
 
 # Dictionaries used to replace the SMOG definitions during the bonds creation.
@@ -37,10 +37,10 @@ dict_gromos_bonds_force = gromos_bonds.set_index('def')['force'].to_dict()
 dict_gromos_bonds_len = gromos_bonds.set_index('def')['len'].to_dict()
 
 gromos_angles = pd.DataFrame(
-    {'def': ['ga_13', 'ga_15', 'ga_19', 'ga_27', 'ga_30', 'ga_31', 'ga_33'],
-     'force': ['520.00', '530.00', '610.00', '560.00', '685.00', '700.00', '730.00'],
-     'angle': ['109.50', '111.00', '115.00', '120.00', '121.00', '122.00', '124.00']
-    }
+    {'def': ['ga_13', 'ga_15', 'ga_19', 'ga_27', 'ga_30', 'ga_31', 'ga_33', 'ga_38', 'ga_22'],
+     'force': ['520.00', '530.00', '610.00', '560.00', '685.00', '700.00', '730.00', '770.00', '635.00'],
+     'angle': ['109.50', '111.00', '115.00', '120.00', '121.00', '122.00', '124.00', '126.00', '117.00']
+     }
 )
 
 dict_gromos_angles_force = gromos_angles.set_index('def')['force'].to_dict()
@@ -50,19 +50,18 @@ gromos_dihedrals = pd.DataFrame(
     {'def': [''],
      'force': [''],
      'len': ['']
-    }
+     }
 )
 
 gromos_impropers = pd.DataFrame(
     {'def': ['gi_1', 'gi_2'],
      'force': ['167.42309', '334.84617'],
      'dihe': ['0.0', '35.26439']
-    }
+     }
 )
 
 dict_gromos_impropers_force = gromos_impropers.set_index('def')['force'].to_dict()
 dict_gromos_impropers_dihe = gromos_impropers.set_index('def')['dihe'].to_dict()
-
 
 # TTR sequence YTIAALLSPYS
 
@@ -74,7 +73,7 @@ ALA.to_dict()
 
 # Alanine bonds definition.
 bALA = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'C', 'C'],
-                     'aj': ['CA', 'CB', 'C', 'O', 'N+'],
+                     'aj': ['CA', 'CB', 'C', 'O', 'N'],
                      'def': ['gb_21', 'gb_27', 'gb_27', 'gb_5', 'gb_10']}
                     )
 
@@ -86,9 +85,9 @@ bALA['bond'] = bALA['ai'] + '+' + bALA['aj']
 bALA_dict = bALA.set_index('bond')['def'].to_dict()
 
 # Alananine angles definition.
-aALA = pd.DataFrame({'ai': ['-C', 'N', 'N', 'CB', 'CA', 'CA', 'O'],
+aALA = pd.DataFrame({'ai': ['C', 'N', 'N', 'C', 'CA', 'CA', 'O'],
                      'aj': ['N', 'CA', 'CA', 'CA', 'C', 'C', 'C'],
-                     'ak': ['CA', 'CB', 'C', 'C', 'O', '+N', '+N'],
+                     'ak': ['CA', 'CB', 'C', 'CB', 'O', 'N', 'N'],
                      'def': ['ga_31', 'ga_13', 'ga_13', 'ga_13', 'ga_30', 'ga_19', 'ga_33']}
                     )
 
@@ -103,17 +102,17 @@ aALA_dict = aALA.set_index('angle')['def'].to_dict()
 # print(aALA_dict)
 
 # Alanine proper dihedrals definition.
-dALA = pd.DataFrame({'ai': ['-CA', '-C', 'N'],
-                     'aj': ['-C', 'N', 'CA'],
+dALA = pd.DataFrame({'ai': ['CA', 'C', 'N'],
+                     'aj': ['C', 'N', 'CA'],
                      'ak': ['N', 'CA', 'C'],
-                     'al': ['CA', 'C', '+N'],
+                     'al': ['CA', 'C', 'N'],
                      'def': ['gd_14', 'gd_39', 'gd_40']}
                     )
 
 # Alananine improper dihedrals definition.
 iALA = pd.DataFrame({'ai': ['CA', 'C'],
                      'aj': ['N', 'CA'],
-                     'ak': ['C', '+N'],
+                     'ak': ['C', 'N'],
                      'al': ['CB', 'O'],
                      'def': ['gi_2', 'gi_1']}
                     )
@@ -137,7 +136,7 @@ THR = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'OG1', 'HG1', 'CG2', 'C', 'O'
 THR.to_dict()
 
 bTHR = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'CB', 'C', 'C'],
-                     'aj': ['CA', 'CB', 'C', 'OG1', 'CG2', 'O', '+N'],
+                     'aj': ['CA', 'CB', 'C', 'OG1', 'CG2', 'O', 'N'],
                      'def': ['gb_21', 'gb_27', 'gb_27', 'gb_18', 'gb_27', 'gb_5', 'gb_10']}
                     )
 
@@ -150,9 +149,9 @@ bTHR['bond'] = bTHR['ai'] + '+' + bTHR['aj']
 bTHR_dict = bTHR.set_index('bond')['def'].to_dict()
 # print(bTHR_dict)
 
-aTHR = pd.DataFrame({'ai': ['-C', 'N', 'N', 'CB', 'CA', 'CA', 'OG1', 'CA', 'CA', 'O'],
+aTHR = pd.DataFrame({'ai': ['C', 'N', 'N', 'C', 'CA', 'CA', 'OG1', 'CA', 'CA', 'O'],
                      'aj': ['N', 'CA', 'CA', 'CA', 'CB', 'CB', 'CB', 'C', 'C', 'C'],
-                     'ak': ['CA', 'CB', 'C', 'C', 'OG1', 'CG2', 'CG2', 'O', '+N', '+N'],
+                     'ak': ['CA', 'CB', 'C', 'CB', 'OG1', 'CG2', 'CG2', 'O', 'N', 'N'],
                      'def': ['ga_31', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_15', 'ga_15', 'ga_30', 'ga_19', 'ga_33']}
                     )
 
@@ -166,7 +165,7 @@ aTHR['angle'] = aTHR['ai'] + '+' + aTHR['aj'] + '+' + aTHR['ak']
 aTHR_dict = aTHR.set_index('angle')['def'].to_dict()
 # print(aTHR_dict)
 
-#dTHR = pd.DataFrame({'ai': [''],
+# dTHR = pd.DataFrame({'ai': [''],
 #                     'aj': [''],
 #                     'ak': [''],
 #                     'al': [''],
@@ -175,7 +174,7 @@ aTHR_dict = aTHR.set_index('angle')['def'].to_dict()
 
 iTHR = pd.DataFrame({'ai': ['CA', 'CB', 'C'],
                      'aj': ['N', 'OG1', 'CA'],
-                     'ak': ['C', 'CG2', '+N'],
+                     'ak': ['C', 'CG2', 'N'],
                      'al': ['CB', 'CA', 'O'],
                      'def': ['gi_2', 'gi_2', 'gi_1']}
                     )
@@ -202,7 +201,7 @@ TYR = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'CG', 'CD1', 'HD1', 'CD2', 'H
 TYR.to_dict()
 
 bTYR = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'CG', 'CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ', 'C', 'C'],
-                     'aj': ['CA', 'CB', 'C', 'CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ', 'CZ', 'OH', 'O', '+N'],
+                     'aj': ['CA', 'CB', 'C', 'CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ', 'CZ', 'OH', 'O', 'N'],
                      'def': ['gb_21', 'gb_27', 'gb_27', 'gb_27', 'gb_16', 'gb_16', 'gb_16', 'gb_16', 'gb_16', 'gb_16',
                              'gb_13', 'gb_5', 'gb_10']}
                     )
@@ -216,27 +215,24 @@ bTYR['bond'] = bTYR['ai'] + '+' + bTYR['aj']
 bTYR_dict = bTYR.set_index('bond')['def'].to_dict()
 # print(bTYR_dict)
 
-aTYR = pd.DataFrame({'ai': ['-C', 'N', 'N', 'CB', 'CA', 'CB', 'CB', 'CD1', 'CG', 'CG', 'CD1', 'CD2', 'CE1', 'CE1',
+aTYR = pd.DataFrame({'ai': ['C', 'N', 'N', 'C', 'CA', 'CB', 'CB', 'CD1', 'CG', 'CG', 'CD1', 'CD2', 'CE1', 'CE1',
                             'CE2', 'CA', 'CA', 'O'],
                      'aj': ['N', 'CA', 'CA', 'CA', 'CB', 'CG', 'CG', 'CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ', 'CZ',
                             'CZ', 'C', 'C', 'C'],
-                     'ak': ['CA', 'CB', 'C', 'C', 'CG', 'CD1', 'CD2', 'CD2', 'CE1', 'CE2', 'CZ', 'CZ', 'CE2', 'OH',
-                            'OH', 'O', '+N', '+N'],
+                     'ak': ['CA', 'CB', 'C', 'CB', 'CG', 'CD1', 'CD2', 'CD2', 'CE1', 'CE2', 'CZ', 'CZ', 'CE2', 'OH',
+                            'OH', 'O', 'N', 'N'],
                      'def': ['ga_31', 'ga_13', 'ga_13', 'ga_13', 'ga_15', 'ga_27', 'ga_27', 'ga_27', 'ga_27', 'ga_27',
                              'ga_27', 'ga_27', 'ga_27', 'ga_27', 'ga_27', 'ga_30', 'ga_19', 'ga_33']}
                     )
 
-# print(aTYR)
 aTYR['ai'] = 'TYR_' + aTYR['ai'].astype(str)
 aTYR['aj'] = 'TYR_' + aTYR['aj'].astype(str)
 aTYR['ak'] = 'TYR_' + aTYR['ak'].astype(str)
 aTYR.insert(3, 'angle', 4)
 aTYR['angle'] = aTYR['ai'] + '+' + aTYR['aj'] + '+' + aTYR['ak']
-# print(aTYR)
 aTYR_dict = aTYR.set_index('angle')['def'].to_dict()
-# print(aTYR_dict)
 
-#dTYR = pd.DataFrame({'ai': [''],
+# dTYR = pd.DataFrame({'ai': [''],
 #                     'aj': [''],
 #                     'ak': [''],
 #                     'al': [''],
@@ -245,7 +241,7 @@ aTYR_dict = aTYR.set_index('angle')['def'].to_dict()
 
 iTYR = pd.DataFrame({'ai': ['CA', 'CG', 'CG', 'CG', 'CD1', 'CD1', 'CD2', 'CD2', 'CZ', 'C'],
                      'aj': ['N', 'CD1', 'CD1', 'CD2', 'CG', 'CE1', 'CG', 'CE2', 'CE1', 'CA'],
-                     'ak': ['C', 'CD2', 'CE1', 'CE2', 'CD2', 'CZ', 'CD1', 'CZ', 'CE2', '+N'],
+                     'ak': ['C', 'CD2', 'CE1', 'CE2', 'CD2', 'CZ', 'CD1', 'CZ', 'CE2', 'N'],
                      'al': ['CB', 'CB', 'CZ', 'CZ', 'CE2', 'CE2', 'CE1', 'CE1', 'OH', 'O'],
                      'def': ['gi_2', 'gi_1', 'gi_1', 'gi_1', 'gi_1', 'gi_1', 'gi_1', 'gi_1', 'gi_1', 'gi_1']}
                     )
@@ -270,8 +266,8 @@ ILE = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'CG1', 'CG2', 'CD1', 'C', 'O'
 ILE.to_dict()
 
 bILE = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'CB', 'CG1', 'C', 'C'],
-                     'aj': ['CA', 'CB', 'C', 'CG1', 'CG2', 'CD1', 'O', '+N'],
-                     'def': ['gb_21', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_27',  'gb_5',  'gb_10']}
+                     'aj': ['CA', 'CB', 'C', 'CG1', 'CG2', 'CD1', 'O', 'N'],
+                     'def': ['gb_21', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_5', 'gb_10']}
                     )
 
 # print(bILE)
@@ -283,9 +279,9 @@ bILE['bond'] = bILE['ai'] + '+' + bILE['aj']
 bILE_dict = bILE.set_index('bond')['def'].to_dict()
 # print(bILE_dict)
 
-aILE = pd.DataFrame({'ai': ['-C', 'N', 'N', 'CB', 'CA', 'CA', 'CG1', 'CB', 'CA', 'CA', 'O'],
+aILE = pd.DataFrame({'ai': ['C', 'N', 'N', 'C', 'CA', 'CA', 'CG1', 'CB', 'CA', 'CA', 'O'],
                      'aj': ['N', 'CA', 'CA', 'CA', 'CB', 'CB', 'CB', 'CG1', 'C', 'C', 'C'],
-                     'ak': ['CA', 'CB', 'C', 'C', 'CG1', 'CG2', 'CG2', 'CD', 'O', '+N', '+N'],
+                     'ak': ['CA', 'CB', 'C', 'CB', 'CG1', 'CG2', 'CG2', 'CD1', 'O', 'N', 'N'],
                      'def': ['ga_31', 'ga_13', 'ga_13', 'ga_13', 'ga_15', 'ga_15', 'ga_15', 'ga_15', 'ga_30',
                              'ga_19', 'ga_33']}
                     )
@@ -300,7 +296,7 @@ aILE['angle'] = aILE['ai'] + '+' + aILE['aj'] + '+' + aILE['ak']
 aILE_dict = aILE.set_index('angle')['def'].to_dict()
 # print(aILE_dict)
 
-#dILE = pd.DataFrame({'ai': [''],
+# dILE = pd.DataFrame({'ai': [''],
 #                     'aj': [''],
 #                     'ak': [''],
 #                     'al': [''],
@@ -309,7 +305,7 @@ aILE_dict = aILE.set_index('angle')['def'].to_dict()
 
 iILE = pd.DataFrame({'ai': ['CA', 'CB', 'C'],
                      'aj': ['N', 'CG1', 'CA'],
-                     'ak': ['C', 'CG2', '+N'],
+                     'ak': ['C', 'CG2', 'N'],
                      'al': ['CB', 'CA', 'O'],
                      'def': ['gi_2', 'gi_2', 'gi_1']}
                     )
@@ -333,37 +329,31 @@ LEU = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'CG', 'CD1', 'CD2', 'C', 'O']
 LEU.to_dict()
 
 bLEU = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'CG', 'CG', 'C', 'C'],
-                     'aj': ['CA', 'CB', 'C', 'CG', 'CD1', 'CD2', 'O', '+N'],
+                     'aj': ['CA', 'CB', 'C', 'CG', 'CD1', 'CD2', 'O', 'N'],
                      'def': ['gb_21', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_5', 'gb_10']}
                     )
 
-# print(bLEU)
 bLEU['ai'] = 'LEU_' + bLEU['ai'].astype(str)
 bLEU['aj'] = 'LEU_' + bLEU['aj'].astype(str)
 bLEU.insert(2, 'bond', 3)
 bLEU['bond'] = bLEU['ai'] + '+' + bLEU['aj']
-# print(bLEU)
 bLEU_dict = bLEU.set_index('bond')['def'].to_dict()
-# print(bLEU_dict)
 
-aLEU = pd.DataFrame({'ai': ['-C', 'N', 'N', 'CB', 'CA', 'CB', 'CB', 'CD1', 'CA', 'CA', 'O'],
+aLEU = pd.DataFrame({'ai': ['C', 'N', 'N', 'C', 'CA', 'CB', 'CB', 'CD1', 'CA', 'CA', 'O'],
                      'aj': ['N', 'CA', 'CA', 'CA', 'CB', 'CG', 'CG', 'CG', 'C', 'C', 'C'],
-                     'ak': ['CA', 'CB', 'C', 'C', 'CG', 'CD1', 'CD2', 'CD2', 'O', '+N', '+N'],
+                     'ak': ['CA', 'CB', 'C', 'CB', 'CG', 'CD1', 'CD2', 'CD2', 'O', 'N', 'N'],
                      'def': ['ga_31', 'ga_13', 'ga_13', 'ga_13', 'ga_15', 'ga_15', 'ga_15', 'ga_15', 'ga_30', 'ga_19',
                              'ga_33']}
                     )
 
-# print(aLEU)
 aLEU['ai'] = 'LEU_' + aLEU['ai'].astype(str)
 aLEU['aj'] = 'LEU_' + aLEU['aj'].astype(str)
 aLEU['ak'] = 'LEU_' + aLEU['ak'].astype(str)
 aLEU.insert(3, 'angle', 4)
 aLEU['angle'] = aLEU['ai'] + '+' + aLEU['aj'] + '+' + aLEU['ak']
-# print(aLEU)
 aLEU_dict = aLEU.set_index('angle')['def'].to_dict()
-# print(aLEU_dict)
 
-#dLEU = pd.DataFrame({'ai': [''],
+# dLEU = pd.DataFrame({'ai': [''],
 #                     'aj': [''],
 #                     'ak': [''],
 #                     'al': [''],
@@ -372,21 +362,18 @@ aLEU_dict = aLEU.set_index('angle')['def'].to_dict()
 
 iLEU = pd.DataFrame({'ai': ['CA', 'CB', 'C'],
                      'aj': ['N', 'CD1', 'CA'],
-                     'ak': ['C', 'CD2', '+N'],
+                     'ak': ['C', 'CD2', 'N'],
                      'al': ['CB', 'CG', 'O'],
                      'def': ['gi_2', 'gi_2', 'gi_1']}
                     )
 
-# print(iLEU)
 iLEU['ai'] = 'LEU_' + iLEU['ai'].astype(str)
 iLEU['aj'] = 'LEU_' + iLEU['aj'].astype(str)
 iLEU['ak'] = 'LEU_' + iLEU['ak'].astype(str)
 iLEU['al'] = 'LEU_' + iLEU['al'].astype(str)
 iLEU.insert(4, 'improper', 5)
 iLEU['improper'] = iLEU['ai'] + '+' + iLEU['aj'] + '+' + iLEU['ak'] + '+' + iLEU['al']
-# print(iLEU)
 iLEU_dict = iLEU.set_index('improper')['def'].to_dict()
-# print(iLEU_dict)
 
 # Serine definition.
 SER = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'OG', 'HG', 'C', 'O'],
@@ -396,22 +383,19 @@ SER = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'OG', 'HG', 'C', 'O'],
 SER.to_dict()
 
 bSER = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'C', 'C'],
-                     'aj': ['CA', 'CB', 'C', 'OG', 'O', '+N'],
+                     'aj': ['CA', 'CB', 'C', 'OG', 'O', 'N'],
                      'def': ['gb_21', 'gb_27', 'gb_27', 'gb_18', 'gb_5', 'gb_10']}
                     )
 
-# print(bSER)
 bSER['ai'] = 'SER_' + bSER['ai'].astype(str)
 bSER['aj'] = 'SER_' + bSER['aj'].astype(str)
 bSER.insert(2, 'bond', 3)
 bSER['bond'] = bSER['ai'] + '+' + bSER['aj']
-# print(bSER)
 bSER_dict = bSER.set_index('bond')['def'].to_dict()
-# print(bSER_dict)
 
-aSER = pd.DataFrame({'ai': ['-C', 'N', 'N', 'CB', 'CA', 'CA', 'CA', 'O'],
+aSER = pd.DataFrame({'ai': ['C', 'N', 'N', 'C', 'CA', 'CA', 'CA', 'O'],
                      'aj': ['N', 'CA', 'CA', 'CA', 'CB', 'C', 'C', 'C'],
-                     'ak': ['CA', 'CB', 'C', 'C', 'OG', 'O', '+N', '+N'],
+                     'ak': ['CA', 'CB', 'C', 'CB', 'OG', 'O', 'N', 'N'],
                      'def': ['ga_31', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_30', 'ga_19', 'ga_33']}
                     )
 
@@ -425,7 +409,7 @@ aSER['angle'] = aSER['ai'] + '+' + aSER['aj'] + '+' + aSER['ak']
 aSER_dict = aSER.set_index('angle')['def'].to_dict()
 # print(aSER_dict)
 
-#dSER = pd.DataFrame({'ai': [''],
+# dSER = pd.DataFrame({'ai': [''],
 #                     'aj': [''],
 #                     'ak': [''],
 #                     'al': [''],
@@ -434,7 +418,7 @@ aSER_dict = aSER.set_index('angle')['def'].to_dict()
 
 iSER = pd.DataFrame({'ai': ['CA', 'C'],
                      'aj': ['N', 'CA'],
-                     'ak': ['C', '+N'],
+                     'ak': ['C', 'N'],
                      'al': ['CB', 'O'],
                      'def': ['gi_2', 'gi_1']}
                     )
@@ -457,10 +441,10 @@ SERT = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'OG', 'HG', 'C', 'O', 'OXT']
 
 SERT.to_dict()
 
-bSERT = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'C', 'C'],
-                     'aj': ['CA', 'CB', 'C', 'OG', 'O', '+N'],
-                     'def': ['gb_21', 'gb_27', 'gb_27', 'gb_18', 'gb_5', 'gb_10']}
-                    )
+bSERT = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'C', 'C', 'C'],
+                      'aj': ['CA', 'CB', 'C', 'OG', 'O', 'N', 'OXT'],
+                      'def': ['gb_21', 'gb_27', 'gb_27', 'gb_18', 'gb_5', 'gb_10', 'gb_5']}
+                     )
 
 # print(bSERT)
 bSERT['ai'] = 'SERT_' + bSERT['ai'].astype(str)
@@ -471,11 +455,11 @@ bSERT['bond'] = bSERT['ai'] + '+' + bSERT['aj']
 bSERT_dict = bSERT.set_index('bond')['def'].to_dict()
 # print(bSERT_dict)
 
-aSERT = pd.DataFrame({'ai': ['-C', 'N', 'N', 'CB', 'CA', 'CA', 'CA', 'O'],
-                     'aj': ['N', 'CA', 'CA', 'CA', 'CB', 'C', 'C', 'C'],
-                     'ak': ['CA', 'CB', 'C', 'C', 'OG', 'O', '+N', '+N'],
-                     'def': ['ga_31', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_30', 'ga_19', 'ga_33']}
-                    )
+aSERT = pd.DataFrame({'ai': ['C', 'N', 'N', 'C', 'CA', 'CA', 'CA', 'O', 'CA', 'O'],
+                      'aj': ['N', 'CA', 'CA', 'CA', 'CB', 'C', 'C', 'C', 'C', 'C'],
+                      'ak': ['CA', 'CB', 'C', 'CB', 'OG', 'O', 'N', 'N', 'OXT', 'OXT'],
+                      'def': ['ga_31', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_30', 'ga_19', 'ga_22', 'ga_22', 'ga_38']}
+                     )
 
 # print(aSERT)
 aSERT['ai'] = 'SERT_' + aSERT['ai'].astype(str)
@@ -487,7 +471,7 @@ aSERT['angle'] = aSERT['ai'] + '+' + aSERT['aj'] + '+' + aSERT['ak']
 aSERT_dict = aSERT.set_index('angle')['def'].to_dict()
 # print(aSERT_dict)
 
-#dSERT = pd.DataFrame({'ai': [''],
+# dSERT = pd.DataFrame({'ai': [''],
 #                     'aj': [''],
 #                     'ak': [''],
 #                     'al': [''],
@@ -495,11 +479,11 @@ aSERT_dict = aSERT.set_index('angle')['def'].to_dict()
 #                    )
 
 iSERT = pd.DataFrame({'ai': ['CA', 'C'],
-                     'aj': ['N', 'CA'],
-                     'ak': ['C', '+N'],
-                     'al': ['CB', 'O'],
-                     'def': ['gi_2', 'gi_1']}
-                    )
+                      'aj': ['N', 'CA'],
+                      'ak': ['C', 'N'],
+                      'al': ['CB', 'O'],
+                      'def': ['gi_2', 'gi_1']}
+                     )
 
 # print(iSERT)
 iSERT['ai'] = 'SERT_' + iSERT['ai'].astype(str)
@@ -519,23 +503,20 @@ PRO = pd.DataFrame({'type': ['N', 'CA', 'CB', 'CG', 'CD', 'C', 'O'],
 
 PRO.to_dict()
 
-bPRO = pd.DataFrame({'ai': ['N', 'N', 'CA', 'CA', 'CB', 'CG', 'C', 'C'],
-                     'aj': ['CA', 'CD', 'CB', 'C', 'CG', 'CD', 'O', '+N'],
+bPRO = pd.DataFrame({'ai': ['N', 'CD', 'CA', 'CA', 'CB', 'CG', 'C', 'C'],
+                     'aj': ['CA', 'N', 'CB', 'C', 'CG', 'CD', 'O', 'N'],
                      'def': ['gb_21', 'gb_21', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_5', 'gb_10']}
                     )
 
-# print(bPRO)
 bPRO['ai'] = 'PRO_' + bPRO['ai'].astype(str)
 bPRO['aj'] = 'PRO_' + bPRO['aj'].astype(str)
 bPRO.insert(2, 'bond', 3)
 bPRO['bond'] = bPRO['ai'] + '+' + bPRO['aj']
-# print(bPRO)
 bPRO_dict = bPRO.set_index('bond')['def'].to_dict()
-# print(bPRO_dict)
 
-aPRO = pd.DataFrame({'ai': ['-C', '-C', 'CA', 'N', 'N', 'CB', 'CA', 'CB', 'N', 'CA', 'CA', 'O'],
+aPRO = pd.DataFrame({'ai': ['C', 'C', 'CA', 'N', 'N', 'C', 'CA', 'CB', 'N', 'CA', 'CA', 'O'],
                      'aj': ['N', 'N', 'N', 'CA', 'CA', 'CA', 'CB', 'CG', 'CD', 'C', 'C', 'C'],
-                     'ak': ['CA', 'CD', 'CD', 'CB', 'C', 'C', 'CG', 'CD', 'CG', 'O', '+N', '+N'],
+                     'ak': ['CA', 'CD', 'CD', 'CB', 'C', 'CB', 'CG', 'CD', 'CG', 'O', 'N', 'N'],
                      'def': ['ga_31', 'ga_31', 'ga_21', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_13', 'ga_30',
                              'ga_19', 'ga_33']}
                     )
@@ -550,7 +531,7 @@ aPRO['angle'] = aPRO['ai'] + '+' + aPRO['aj'] + '+' + aPRO['ak']
 aPRO_dict = aPRO.set_index('angle')['def'].to_dict()
 # print(aPRO_dict)
 
-#dPRO = pd.DataFrame({'ai': [''],
+# dPRO = pd.DataFrame({'ai': [''],
 #                     'aj': [''],
 #                     'ak': [''],
 #                     'al': [''],
@@ -558,29 +539,57 @@ aPRO_dict = aPRO.set_index('angle')['def'].to_dict()
 #                    )
 
 iPRO = pd.DataFrame({'ai': ['N', 'CA', 'C'],
-                     'aj': ['-C', 'N', 'CA'],
-                     'ak': ['CA', 'C', '+N'],
+                     'aj': ['C', 'N', 'CA'],
+                     'ak': ['CA', 'C', 'N'],
                      'al': ['CD', 'CB', 'O'],
                      'def': ['gi_1', 'gi_2', 'gi_1']}
                     )
 
-# print(iPRO)
 iPRO['ai'] = 'PRO_' + iPRO['ai'].astype(str)
 iPRO['aj'] = 'PRO_' + iPRO['aj'].astype(str)
 iPRO['ak'] = 'PRO_' + iPRO['ak'].astype(str)
 iPRO['al'] = 'PRO_' + iPRO['al'].astype(str)
 iPRO.insert(4, 'improper', 5)
 iPRO['improper'] = iPRO['ai'] + '+' + iPRO['aj'] + '+' + iPRO['ak'] + '+' + iPRO['al']
-# print(iPRO)
 iPRO_dict = iPRO.set_index('improper')['def'].to_dict()
-# print(iPRO_dict)
+print(iPRO_dict)
 
 
-aa_bonds = {**bALA_dict, **bTYR_dict, **bILE_dict, **bLEU_dict, **bPRO_dict, **bSER_dict, **bSERT_dict, **bTHR_dict}
-aa_angles = {**aALA_dict, **aTYR_dict, **aILE_dict, **aLEU_dict, **aPRO_dict, **aSER_dict, **aSERT_dict, **aTHR_dict}
+# Creation of a dictionaries for bonds, angles and impropers between two aminoacids
+b_aa = pd.DataFrame({'ai': ['TYR_C', 'THR_C', 'ILE_C', 'ALA_C', 'LEU_C', 'SER_C', 'PRO_C', 'TYR_C'],
+                     'aj': ['THR_N', 'ILE_N', 'ALA_N', 'LEU_N', 'SER_N', 'PRO_N', 'TYR_N', 'SERT_N'],
+                     'def': ['gb_5', 'gb_5', 'gb_5', 'gb_5', 'gb_5', 'gb_5', 'gb_5', 'gb_5']}
+                    )
+
+b_aa['bond'] = b_aa['ai'] + '+' + b_aa['aj']
+b_aa_dict = b_aa.set_index('bond')['def'].to_dict()
+
+a_aa = pd.DataFrame({'ai': ['TYR_CA', 'TYR_C', 'TYR_O', 'THR_CA', 'THR_C', 'THR_O', 'ILE_CA', 'ILE_C', 'ILE_O',
+                            'ALA_CA', 'ALA_C', 'ALA_O', 'LEU_CA', 'LEU_C', 'LEU_O', 'SER_CA', 'SER_C', 'SER_C', 'SER_O',
+                            'PRO_CA', 'PRO_C', 'PRO_O', 'TYR_CA', 'TYR_C', 'TYR_O'],
+                     'aj': ['TYR_C', 'THR_N', 'TYR_C', 'THR_C', 'ILE_N', 'THR_C', 'ILE_C', 'ALA_N', 'ILE_C', 'ALA_C',
+                            'LEU_N', 'ALA_C', 'LEU_C', 'SER_N', 'LEU_C', 'SER_C', 'PRO_N', 'PRO_N', 'SER_C', 'PRO_C',
+                            'TYR_N', 'PRO_C', 'TYR_C', 'SERT_N', 'TYR_C'],
+                     'ak': ['THR_N', 'THR_CA', 'THR_N', 'ILE_N', 'ILE_CA', 'ILE_N', 'ALA_N', 'ALA_CA', 'ALA_N', 'LEU_N',
+                            'LEU_CA', 'LEU_N', 'SER_N', 'SER_CA', 'SER_N', 'PRO_N', 'PRO_CA', 'PRO_CD', 'PRO_N', 'TYR_N',
+                            'TYR_CA', 'TYR_N', 'SERT_N', 'SERT_CA', 'SERT_N'],
+                     'def': ['ga_31', 'ga_31', 'ga_33', 'ga_31', 'ga_31', 'ga_33', 'ga_31', 'ga_31', 'ga_33', 'ga_31',
+                             'ga_31', 'ga_33', 'ga_31', 'ga_31', 'ga_33', 'ga_31', 'ga_31', 'ga_31', 'ga_33', 'ga_31',
+                             'ga_31', 'ga_33', 'ga_31', 'ga_31', 'ga_33']}
+                    )
+
+a_aa['angle'] = a_aa['ai'] + '+' + a_aa['aj'] + '+' + a_aa['ak']
+a_aa_dict = a_aa.set_index('angle')['def'].to_dict()
+
+
+
+# Merging all the dictionary into one to replace in functions.py
+aa_bonds = {**bALA_dict, **bTYR_dict, **bILE_dict, **bLEU_dict, **bPRO_dict, **bSER_dict, **bSERT_dict, **bTHR_dict,
+            **b_aa_dict}
+aa_angles = {**aALA_dict, **aTYR_dict, **aILE_dict, **aLEU_dict, **aPRO_dict, **aSER_dict, **aSERT_dict, **aTHR_dict,
+             **a_aa_dict}
 aa_impropers = {**iALA_dict, **iTYR_dict, **iILE_dict, **iLEU_dict, **iPRO_dict, **iSER_dict, **iSERT_dict, **iTHR_dict}
-# print(aa_bonds)
-
+print(aa_impropers)
 
 
 gromos_aa = {}
@@ -592,18 +601,18 @@ for res, resn in zip(reslist, reslistname):
         gromos_aa[str] = res.iloc[i, 1]
 # # print(gromos_aa)
 
-#bALA = pd.DataFrame({'ai': [''],
+# bALA = pd.DataFrame({'ai': [''],
 #                     'aj': [''],
 #                     'def': ['']}
 #                    )
 
-#aALA = pd.DataFrame({'ai': [''],
+# aALA = pd.DataFrame({'ai': [''],
 #                     'aj': [''],
 #                     'ak': [''],
 #                     'def': ['']}
 #                    )
 
-#aALA = pd.DataFrame({'ai': [''],
+# aALA = pd.DataFrame({'ai': [''],
 #                     'aj': [''],
 #                     'ak': [''],
 #                     'al': [''],
