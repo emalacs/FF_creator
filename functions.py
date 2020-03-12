@@ -8,7 +8,7 @@ import re as re
 
 # atomtypes.atp created using the peptide and used also with the peptide
 
-def make_atomtypes_and_dict(atomtypes, gromos_res_atom_dict, gromos_mass_dict):  # qui si mette l'output di read_*_atoms
+def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     # print ("[ atomtypes ] of ffnonbonded")
     # This function prepare the file for ffnonbonded of the peptide
     # Creation of the atomtypes dictionary
@@ -40,27 +40,6 @@ def make_atomtypes_and_dict(atomtypes, gromos_res_atom_dict, gromos_mass_dict): 
     atp = pd.DataFrame(atomtypes, columns = ['; type', 'mass'])
     return atp, atomtypes, dict_atomtypes, dict_aminores
 
-
-# VALUTARE SE QUESTA PARTE HA SENSO SPOSTARLA NELLE DEFINIZIONI INVECE CHE NELLE FUNZIONI
-# From Gromos topology
-def make_gromos_topology_dictionaries(gro_atoms, gro_impropers):
-    # Gromos chemical type and mass
-    gromos_mass = gro_atoms[['type', 'mass']].drop_duplicates(subset = ['type'], keep = 'first').copy()
-    gromos_mass_dict = gromos_mass.set_index('type')['mass'].to_dict()
-    print('RICORDATI DI CAMBIARE LE MASSE NEL FF, QUI GLI H SONO TUTTI ESPLICITI!!!!')
-
-    # Gromos dictionary of residue_atom : chemical type
-    gromos_res_atom = gro_atoms[['residue', 'atom', 'type']].copy()
-    gromos_res_atom['res_atom'] = gromos_res_atom['residue'] + '_' + gromos_res_atom['atom']
-    gromos_res_atom_dict = gromos_res_atom.set_index('res_atom')['type']
-    gromos_res_atom_dict = gromos_res_atom_dict.to_dict()
-    #print(gromos_res_atom_dict)
-
-    # Gromos impropers dictionary residue_atom to : define
-    dict_gro_atomtypes = gro_atoms.set_index('; nr')['atom_nmr'].to_dict()
-    dict_gro_impropers =
-    print(dict_gro_atomtypes)
-    return gromos_mass_dict, gromos_res_atom_dict, dict_gro_atomtypes
 
 # Function for topology
 
@@ -187,88 +166,37 @@ def ffbonded_angles_backup(angles, dict_atomtypes):
 
 def ffbonded_dihedrals(dihedrals, dict_atomtypes, dict_aminores):
     # Changing the atomnumber with the atomtype defined in the dictionary
-    # DA METTERE ALLA FINE
-    #dihedrals[";ai"].replace(dict_atomtypes, inplace = True)
-    #dihedrals["aj"].replace(dict_atomtypes, inplace = True)
-    #dihedrals["ak"].replace(dict_atomtypes, inplace = True)
-    #dihedrals["al"].replace(dict_atomtypes, inplace = True)
-    # Here we are rescaling the kb to work at 300 K, more or less
-    # This quick and dirty step allow us to raise the temperature and have a proper Langevin behaviour
-    # I keep this string since the proper dihedrals (1) requires a rescale
-    dihedrals['Kd'] = dihedrals['Kd'] * (300 / 70)
-
     # Separation of the impropers and the propers. The propers will be replaced by gromos values
     proper_dihedrals = dihedrals.loc[dihedrals['func'] == 1]
     improper_dihedrals = dihedrals.loc[dihedrals['func'] == 2]
 
-
     # Changing the atomnumber with the atomtype defined in the dictionary
-    improper_dihedrals['ai_aminores'] = improper_dihedrals[';ai']
-    improper_dihedrals['aj_aminores'] = improper_dihedrals['aj']
-    improper_dihedrals['ak_aminores'] = improper_dihedrals['ak']
-    improper_dihedrals['al_aminores'] = improper_dihedrals['al']
+    improper_dihedrals['ai_aminores'] = improper_dihedrals[';ai'].copy()
+    improper_dihedrals['aj_aminores'] = improper_dihedrals['aj'].copy()
+    improper_dihedrals['ak_aminores'] = improper_dihedrals['ak'].copy()
+    improper_dihedrals['al_aminores'] = improper_dihedrals['al'].copy()
+    improper_dihedrals[";ai"].replace(dict_atomtypes, inplace=True)
+    improper_dihedrals["aj"].replace(dict_atomtypes, inplace=True)
+    improper_dihedrals["ak"].replace(dict_atomtypes, inplace=True)
+    improper_dihedrals["al"].replace(dict_atomtypes, inplace=True)
 
     # Replacing using the gromos FF definition instead the one coming from SMOG
-    improper_dihedrals['ai_aminores'].replace(dict_aminores, inplace = True)
-    improper_dihedrals['aj_aminores'].replace(dict_aminores, inplace = True)
-    improper_dihedrals['ak_aminores'].replace(dict_aminores, inplace = True)
-    improper_dihedrals['al_aminores'].replace(dict_aminores, inplace = True)
-    dihedrals.to_string(index = False)
-
-    improper_dihedrals['improper_dihedrals'] = improper_dihedrals['ai_aminores'] + '+' + improper_dihedrals[
-        'aj_aminores'] + '+' + improper_dihedrals['ak_aminores'] + '+' + improper_dihedrals['al_aminores']
-    #print(improper_dihedrals)
-    improper_dihedrals['improper_dihedrals'].replace(aa_impropers, inplace = True)
-
-    improper_dihedrals['gromos_phi'] = improper_dihedrals['improper_dihedrals']
-    improper_dihedrals['gromos_phi'].replace(dict_gromos_impropers_dihe, inplace = True)
-    improper_dihedrals['gromos_kd'] = improper_dihedrals['improper_dihedrals']
-    improper_dihedrals['gromos_kd'].replace(dict_gromos_impropers_force, inplace = True)
-
-    #print(improper_dihedrals.to_string())
-
-    #angles['ai_aminores'].replace(dict_aminores, inplace=True)
-    #angles['aj_aminores'].replace(dict_aminores, inplace=True)
-    #angles['ak_aminores'].replace(dict_aminores, inplace=True)
-    #angles.to_string(index=False)
-    #angles['angles'] = angles['ai_aminores'] + '+' + angles['aj_aminores'] + '+' + angles['ak_aminores']
-    #angles['angles'].replace(aa_angles, inplace=True)
-    #angles['gromos_th0'] = angles['angles']
-    #angles['gromos_ka'] = angles['angles']
-    #angles['gromos_th0'].replace(dict_gromos_angles_angle, inplace=True)
-    #angles['gromos_ka'].replace(dict_gromos_angles_force, inplace=True)
-    #angles = angles.drop(['th0', 'Ka', 'angles', 'aj_aminores', 'ai_aminores', 'ak_aminores'], axis=1)
-    #angles.columns = ["; ai", "aj", 'ak', "func", 'gromos_th0', 'gromos_ka']
-
-
-
-    #angles = angles.drop(['th0', 'Ka', 'angles', 'aj_aminores', 'ai_aminores', 'ak_aminores'], axis = 1)
-    #angles.columns = ["; ai", "aj", 'ak', "func", 'gromos_th0', 'gromos_ka']
+    improper_dihedrals["ai_aminores"].replace(dict_aminores, inplace=True)
+    improper_dihedrals["aj_aminores"].replace(dict_aminores, inplace=True)
+    improper_dihedrals["ak_aminores"].replace(dict_aminores, inplace=True)
+    improper_dihedrals["al_aminores"].replace(dict_aminores, inplace=True)
+    improper_dihedrals.to_string(index=False)
+    improper_dihedrals['dihedrals'] = improper_dihedrals["ai_aminores"] + '+' + improper_dihedrals["aj_aminores"] + '+' +\
+                             improper_dihedrals["ak_aminores"] + '+' + improper_dihedrals["al_aminores"]
+    print(improper_dihedrals)
+    improper_dihedrals['dihedrals'].replace(dict_gro_impropers, inplace = True)
+    print(improper_dihedrals.to_string())
 
 
 
 
 
 
-
-
-
-
-
-
-
-    #print(improper_dihedrals)
-
-    # Separazione delle colonne con dei numeri per la notazione scientifica
-    phi0_notation = dihedrals["phi0"].map(lambda x:'{:.9e}'.format(x))
-    kd_notation = dihedrals["Kd"].map(lambda x:'{:.9e}'.format(x))
-    # Sostituzione delle colonne all'interno del dataframe
-    dihedrals = dihedrals.assign(phi0 = phi0_notation)
-    dihedrals = dihedrals.assign(Kd = kd_notation)
-    # Nei diedri e necessario sostituire l'1 con il 9 perche alcuni diedri vengono definiti due volte
-    dihedrals["func"] = dihedrals["func"].replace(1, 9)
-    # Ennesima definizione delle colonne
-    dihedrals.columns = [";  i", "j", "k", "l", "func", "phi", "kd", "mult"]
     return dihedrals
 
 

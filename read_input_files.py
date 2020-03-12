@@ -106,6 +106,7 @@ def read_gro_atoms():
     gro_atoms.columns = ["; nr", "type", "resnr", "residue", "atom", "cgnr", 'charge', 'mass']
     gro_atoms = gro_atoms.drop(['charge', 'cgnr'], axis = 1)
     gro_atoms["atom_nmr"] = gro_atoms["atom"].apply(str) + '_' + gro_atoms["resnr"].apply(str)
+    gro_atoms['res_atom'] = gro_atoms['residue'] + '_' + gro_atoms['atom']
     return gro_atoms
 
 
