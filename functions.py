@@ -1,32 +1,28 @@
 import numpy as np
 import pandas as pd
 from atomtypes_aa_definitions import *
+import re as re
 
 
 # Dictionary definitions for both peptide and fibril
 
 # atomtypes.atp created using the peptide and used also with the peptide
 
-def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
+def make_atomtypes_and_dict(atomtypes, gromos_res_atom_dict, gromos_mass_dict):  # qui si mette l'output di read_*_atoms
     # print ("[ atomtypes ] of ffnonbonded")
     # This function prepare the file for ffnonbonded of the peptide
-    # print(atomtypes)
-    # Creation of a dictionary which associates the atom number to the aminoacid and the atom type
-    aminores = atomtypes[['; nr', 'residue', 'atom']].copy()
-    aminores['aminores'] = aminores['residue'] + '_' + aminores['atom']
-    # print(aminores)
-    dict_aminores = aminores.set_index('; nr')['aminores'].to_dict()
-    # print(dict_aminores)
     # Creation of the atomtypes dictionary
     dict_atomtypes = atomtypes.set_index("; nr")["type"].to_dict()
-    # Handling the information from the topology atomtypes
+        # Handling the information from the topology atomtypes
     atomtypes['at.group'] = atomtypes['residue'] + '_' + atomtypes['atom']
+    # Creation of a dictionary which associates the atom number to the aminoacid and the atom type
+    dict_aminores = atomtypes.set_index('; nr')['at.group'].to_dict()
     # Addition of the information from gromos FF (gromos_atp from atomtypes_aa_definitions.py)
-    atomtypes['at.group'].replace(gromos_aa, inplace = True)
+    atomtypes['at.group'].replace(gromos_res_atom_dict, inplace = True)
     atomtypes.insert(3, 'at.num', 4)
     atomtypes['at.num'] = atomtypes['at.group'].map(gromos_atp['at.num'])
     atomtypes.insert(4, 'mass', 5)
-    atomtypes['mass'] = atomtypes['at.group'].map(gromos_atp['mass'])
+    atomtypes['mass'] = atomtypes['at.group'].map(gromos_mass_dict)
     atomtypes["charge"] = '0.000000'
     atomtypes.insert(9, 'ptype', 10)
     atomtypes["ptype"] = 'A'
@@ -44,6 +40,27 @@ def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     atp = pd.DataFrame(atomtypes, columns = ['; type', 'mass'])
     return atp, atomtypes, dict_atomtypes, dict_aminores
 
+
+# VALUTARE SE QUESTA PARTE HA SENSO SPOSTARLA NELLE DEFINIZIONI INVECE CHE NELLE FUNZIONI
+# From Gromos topology
+def make_gromos_topology_dictionaries(gro_atoms, gro_impropers):
+    # Gromos chemical type and mass
+    gromos_mass = gro_atoms[['type', 'mass']].drop_duplicates(subset = ['type'], keep = 'first').copy()
+    gromos_mass_dict = gromos_mass.set_index('type')['mass'].to_dict()
+    print('RICORDATI DI CAMBIARE LE MASSE NEL FF, QUI GLI H SONO TUTTI ESPLICITI!!!!')
+
+    # Gromos dictionary of residue_atom : chemical type
+    gromos_res_atom = gro_atoms[['residue', 'atom', 'type']].copy()
+    gromos_res_atom['res_atom'] = gromos_res_atom['residue'] + '_' + gromos_res_atom['atom']
+    gromos_res_atom_dict = gromos_res_atom.set_index('res_atom')['type']
+    gromos_res_atom_dict = gromos_res_atom_dict.to_dict()
+    #print(gromos_res_atom_dict)
+
+    # Gromos impropers dictionary residue_atom to : define
+    dict_gro_atomtypes = gro_atoms.set_index('; nr')['atom_nmr'].to_dict()
+    dict_gro_impropers =
+    print(dict_gro_atomtypes)
+    return gromos_mass_dict, gromos_res_atom_dict, dict_gro_atomtypes
 
 # Function for topology
 
@@ -200,7 +217,7 @@ def ffbonded_dihedrals(dihedrals, dict_atomtypes, dict_aminores):
 
     improper_dihedrals['improper_dihedrals'] = improper_dihedrals['ai_aminores'] + '+' + improper_dihedrals[
         'aj_aminores'] + '+' + improper_dihedrals['ak_aminores'] + '+' + improper_dihedrals['al_aminores']
-    print(improper_dihedrals)
+    #print(improper_dihedrals)
     improper_dihedrals['improper_dihedrals'].replace(aa_impropers, inplace = True)
 
     improper_dihedrals['gromos_phi'] = improper_dihedrals['improper_dihedrals']
@@ -208,7 +225,7 @@ def ffbonded_dihedrals(dihedrals, dict_atomtypes, dict_aminores):
     improper_dihedrals['gromos_kd'] = improper_dihedrals['improper_dihedrals']
     improper_dihedrals['gromos_kd'].replace(dict_gromos_impropers_force, inplace = True)
 
-    print(improper_dihedrals.to_string())
+    #print(improper_dihedrals.to_string())
 
     #angles['ai_aminores'].replace(dict_aminores, inplace=True)
     #angles['aj_aminores'].replace(dict_aminores, inplace=True)
@@ -240,7 +257,7 @@ def ffbonded_dihedrals(dihedrals, dict_atomtypes, dict_aminores):
 
 
 
-    print(improper_dihedrals)
+    #print(improper_dihedrals)
 
     # Separazione delle colonne con dei numeri per la notazione scientifica
     phi0_notation = dihedrals["phi0"].map(lambda x:'{:.9e}'.format(x))

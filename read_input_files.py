@@ -11,10 +11,8 @@ def read_pep_atoms():
     # addition of a charge empty column
     pep_atoms.columns = ["; nr", "type", "resnr", "residue", "atom", "cgnr", "charge"]
     # I've created the header with the correct column names
-
     # The following function is necessary to associate the resID with the residue number.
     # Changing the atom type column -> patoms column 5 + 3
-
     pep_atoms["type"] = pep_atoms["atom"].apply(str) + '_' + pep_atoms["resnr"].apply(str)
     # Afterwards the function make_pep_atp_dict will create a dictionary based on this column
     return pep_atoms
@@ -106,4 +104,13 @@ def read_gro_atoms():
     # Reading the atoms section from gromos topology
     gro_atoms = pd.read_csv('input/pep_gro_atoms', sep = "\s+", header = None)
     gro_atoms.columns = ["; nr", "type", "resnr", "residue", "atom", "cgnr", 'charge', 'mass']
+    gro_atoms = gro_atoms.drop(['charge', 'cgnr'], axis = 1)
+    gro_atoms["atom_nmr"] = gro_atoms["atom"].apply(str) + '_' + gro_atoms["resnr"].apply(str)
     return gro_atoms
+
+
+def read_gro_impropers():
+    # Reading the impropers obtained from gromos topology
+    gro_impropers = pd.read_csv('input/pep_gro_impropers', sep="\s+", header=None)
+    gro_impropers.columns = ["; ai", "aj", "ak", "al", "funct", "define"]
+    return gro_impropers

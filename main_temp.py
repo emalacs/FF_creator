@@ -10,8 +10,10 @@ from atomtypes_aa_definitions import *
 ########################################################################################################################
 # TEST GROMOS
 
-print(read_gro_atoms().to_string())
+#print(read_gro_atoms().to_string())
 
+# Dictionaries from gromos topology
+gromos_mass_dict, gromos_res_atom_dict, dict_gro_atomtypes = make_gromos_topology_dictionaries(read_gro_atoms(), read_gro_impropers())
 
 ########################################################################################################################
 ########################################################################################################################
@@ -43,7 +45,9 @@ print('')
 print('atomtype.atp creation')
 
 #pep_atoms = read_pep_atoms()
-atp, atomtypes, dict_pep_atomtypes, dict_pep_aminores = make_atomtypes_and_dict(read_pep_atoms())
+atp, atomtypes, dict_pep_atomtypes, dict_pep_aminores = make_atomtypes_and_dict(read_pep_atoms(),
+                                                                                gromos_res_atom_dict,
+                                                                                gromos_mass_dict)
 
 write_atomtypes_atp(atp)
 
@@ -92,7 +96,8 @@ print('Preparing the fibril ffbonded.itp')
 # Making a dictionary out of it to change the atomnumber to the atomtype
 # The dictionary is based on the fibril atoms
 #fib_atoms = read_fib_atoms()
-atp, atomtypes, dict_fib_atomtypes, dict_fib_aminores = make_atomtypes_and_dict(read_fib_atoms())
+atp, atomtypes, dict_fib_atomtypes, dict_fib_aminores = make_atomtypes_and_dict(read_fib_atoms(), gromos_res_atom_dict,
+                                                                                gromos_mass_dict)
 
 # vimdiff ok, sono lo stesso file che c'e nel peptide
 
@@ -110,7 +115,6 @@ write_fib_ffbonded(fib_ff_bonds, fib_ff_angles, fib_ff_dihedrals)
 
 print('Fibril ffbonded.itp created')
 print('')
-# vimdiff ok
 
 print('Preparation of fibril ffnonbonded.itp')
 

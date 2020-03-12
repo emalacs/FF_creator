@@ -10,6 +10,43 @@ import pandas as pd
 
 # GROMOS 53a6
 
+
+
+
+
+# Dictionaries and definitions obtained from gromos topology.
+# Gromos chemical type and mass
+gromos_mass = gro_atoms[['type', 'mass']].drop_duplicates(subset = ['type'], keep = 'first').copy()
+gromos_mass_dict = gromos_mass.set_index('type')['mass'].to_dict()
+print('RICORDATI DI CAMBIARE LE MASSE NEL FF, QUI GLI H SONO TUTTI ESPLICITI!!!!')
+
+# Gromos dictionary of residue_atom : chemical type
+gromos_res_atom = gro_atoms[['residue', 'atom', 'type']].copy()
+gromos_res_atom['res_atom'] = gromos_res_atom['residue'] + '_' + gromos_res_atom['atom']
+gromos_res_atom_dict = gromos_res_atom.set_index('res_atom')['type']
+gromos_res_atom_dict = gromos_res_atom_dict.to_dict()
+#print(gromos_res_atom_dict)
+
+# Gromos impropers dictionary residue_atom to : define
+dict_gro_atomtypes = gro_atoms.set_index('; nr')['atom_nmr'].to_dict()
+dict_gro_impropers =
+print(dict_gro_atomtypes)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # THE C12 RATIO CHANGED a little bit.
 gromos_atp = pd.DataFrame(
     {'name': ['O', 'OA', 'N', 'C', 'CH1', 'CH2', 'CH3', 'CH2r', 'NT'],
@@ -64,12 +101,6 @@ dict_gromos_impropers_force = gromos_impropers.set_index('def')['force'].to_dict
 dict_gromos_impropers_dihe = gromos_impropers.set_index('def')['dihe'].to_dict()
 
 # TTR sequence YTIAALLSPYS
-
-# Alanine atomtypes definition.
-ALA = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'C', 'O'],
-                    'name': ['N', 'H', 'CH1', 'CH3', 'C', 'O']}
-                   )
-ALA.to_dict()
 
 # Alanine bonds definition.
 bALA = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'C', 'C'],
@@ -129,12 +160,6 @@ iALA_dict = iALA.set_index('improper')['def'].to_dict()
 # print(iALA_dict)
 
 # Threonine definition.
-THR = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'OG1', 'HG1', 'CG2', 'C', 'O'],
-                    'name': ['N', 'H', 'CH1', 'CH1', 'OA', 'H', 'CH3', 'C', 'O']}
-                   )
-
-THR.to_dict()
-
 bTHR = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'CB', 'C', 'C'],
                      'aj': ['CA', 'CB', 'C', 'OG1', 'CG2', 'O', 'N'],
                      'def': ['gb_21', 'gb_27', 'gb_27', 'gb_18', 'gb_27', 'gb_5', 'gb_10']}
@@ -192,14 +217,6 @@ iTHR_dict = iTHR.set_index('improper')['def'].to_dict()
 
 
 # Tyrosine definition.
-TYR = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'CG', 'CD1', 'HD1', 'CD2', 'HD2', 'CE1', 'HE1', 'CE2', 'HE2', 'CZ',
-                             'OH', 'HH', 'C', 'O'],
-                    'name': ['N', 'H', 'CH1', 'CH2', 'C', 'C', 'HC', 'C', 'HC', 'C', 'HC', 'C',
-                             'HC', 'C', 'OA', 'H', 'C', 'O']}
-                   )
-
-TYR.to_dict()
-
 bTYR = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'CG', 'CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ', 'C', 'C'],
                      'aj': ['CA', 'CB', 'C', 'CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ', 'CZ', 'OH', 'O', 'N'],
                      'def': ['gb_21', 'gb_27', 'gb_27', 'gb_27', 'gb_16', 'gb_16', 'gb_16', 'gb_16', 'gb_16', 'gb_16',
@@ -259,12 +276,6 @@ iTYR_dict = iTYR.set_index('improper')['def'].to_dict()
 
 
 # Isoleucine definition.
-ILE = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'CG1', 'CG2', 'CD1', 'C', 'O'],
-                    'name': ['N', 'H', 'CH1', 'CH1', 'CH2', 'CH3', 'CH3', 'C', 'O']}
-                   )
-
-ILE.to_dict()
-
 bILE = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'CB', 'CG1', 'C', 'C'],
                      'aj': ['CA', 'CB', 'C', 'CG1', 'CG2', 'CD1', 'O', 'N'],
                      'def': ['gb_21', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_5', 'gb_10']}
@@ -322,12 +333,6 @@ iILE_dict = iILE.set_index('improper')['def'].to_dict()
 # print(iILE_dict)
 
 # Leucine definition.
-LEU = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'CG', 'CD1', 'CD2', 'C', 'O'],
-                    'name': ['N', 'H', 'CH1', 'CH2', 'CH1', 'CH3', 'CH3', 'C', 'O']}
-                   )
-
-LEU.to_dict()
-
 bLEU = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'CG', 'CG', 'C', 'C'],
                      'aj': ['CA', 'CB', 'C', 'CG', 'CD1', 'CD2', 'O', 'N'],
                      'def': ['gb_21', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_5', 'gb_10']}
@@ -376,12 +381,6 @@ iLEU['improper'] = iLEU['ai'] + '+' + iLEU['aj'] + '+' + iLEU['ak'] + '+' + iLEU
 iLEU_dict = iLEU.set_index('improper')['def'].to_dict()
 
 # Serine definition.
-SER = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'OG', 'HG', 'C', 'O'],
-                    'name': ['N', 'H', 'CH1', 'CH2', 'OA', 'H', 'C', 'O']}
-                   )
-
-SER.to_dict()
-
 bSER = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'C', 'C'],
                      'aj': ['CA', 'CB', 'C', 'OG', 'O', 'N'],
                      'def': ['gb_21', 'gb_27', 'gb_27', 'gb_18', 'gb_5', 'gb_10']}
@@ -435,12 +434,6 @@ iSER_dict = iSER.set_index('improper')['def'].to_dict()
 # print(iSER_dict)
 
 # Serine terminal definition
-SERT = pd.DataFrame({'type': ['N', 'H', 'CA', 'CB', 'OG', 'HG', 'C', 'O', 'OXT'],
-                     'name': ['N', 'H', 'CH1', 'CH2', 'OA', 'H', 'C', 'O', 'O']}
-                    )
-
-SERT.to_dict()
-
 bSERT = pd.DataFrame({'ai': ['N', 'CA', 'CA', 'CB', 'C', 'C', 'C'],
                       'aj': ['CA', 'CB', 'C', 'OG', 'O', 'N', 'OXT'],
                       'def': ['gb_21', 'gb_27', 'gb_27', 'gb_18', 'gb_5', 'gb_10', 'gb_5']}
@@ -497,12 +490,6 @@ iSERT_dict = iSERT.set_index('improper')['def'].to_dict()
 # print(iSERT_dict)
 
 # Proline definition.
-PRO = pd.DataFrame({'type': ['N', 'CA', 'CB', 'CG', 'CD', 'C', 'O'],
-                    'name': ['N', 'CH1', 'CH2r', 'CH2r', 'CH2r', 'C', 'O']}
-                   )
-
-PRO.to_dict()
-
 bPRO = pd.DataFrame({'ai': ['N', 'CD', 'CA', 'CA', 'CB', 'CG', 'C', 'C'],
                      'aj': ['CA', 'N', 'CB', 'C', 'CG', 'CD', 'O', 'N'],
                      'def': ['gb_21', 'gb_21', 'gb_27', 'gb_27', 'gb_27', 'gb_27', 'gb_5', 'gb_10']}
@@ -552,7 +539,7 @@ iPRO['al'] = 'PRO_' + iPRO['al'].astype(str)
 iPRO.insert(4, 'improper', 5)
 iPRO['improper'] = iPRO['ai'] + '+' + iPRO['aj'] + '+' + iPRO['ak'] + '+' + iPRO['al']
 iPRO_dict = iPRO.set_index('improper')['def'].to_dict()
-print(iPRO_dict)
+#print(iPRO_dict)
 
 
 # Creation of a dictionaries for bonds, angles and impropers between two aminoacids
@@ -589,17 +576,7 @@ aa_bonds = {**bALA_dict, **bTYR_dict, **bILE_dict, **bLEU_dict, **bPRO_dict, **b
 aa_angles = {**aALA_dict, **aTYR_dict, **aILE_dict, **aLEU_dict, **aPRO_dict, **aSER_dict, **aSERT_dict, **aTHR_dict,
              **a_aa_dict}
 aa_impropers = {**iALA_dict, **iTYR_dict, **iILE_dict, **iLEU_dict, **iPRO_dict, **iSER_dict, **iSERT_dict, **iTHR_dict}
-print(aa_impropers)
-
-
-gromos_aa = {}
-reslist = [ALA, TYR, ILE, LEU, PRO, SER, SERT, THR]
-reslistname = ['ALA', 'TYR', 'ILE', 'LEU', 'PRO', 'SER', 'SERT', 'THR']
-for res, resn in zip(reslist, reslistname):
-    for i in range(len(res['type'])):
-        str = resn + '_' + res.iloc[i, 0]
-        gromos_aa[str] = res.iloc[i, 1]
-# # print(gromos_aa)
+#print(aa_impropers)
 
 # bALA = pd.DataFrame({'ai': [''],
 #                     'aj': [''],
