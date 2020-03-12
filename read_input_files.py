@@ -95,3 +95,15 @@ def read_fib_pairs():
     fib_pairs = pd.read_csv('input/fib_pairs', sep = "\s+", header = None)
     fib_pairs.columns = [";ai", "aj", "type", "A", "B"]
     return fib_pairs
+
+########################################################################################################################
+########################################################################################################################
+
+# GROMOS TEST
+
+
+def read_gro_atoms():
+    # Reading the atoms section from gromos topology
+    gro_atoms = pd.read_csv('input/pep_gro_atoms', sep = "\s+", header = None)
+    gro_atoms.columns = ["; nr", "type", "resnr", "residue", "atom", "cgnr", 'charge', 'mass']
+    return gro_atoms

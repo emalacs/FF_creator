@@ -6,6 +6,16 @@ from atomtypes_aa_definitions import *
 # SAREBBE DA RIFARE LA GESTIONE DELL'INPUT. IN QUESTO MODO VIENE LETTO TUTTO UNA VOLTA, MODIFICATO UNA VOLTA E POI
 # LE DIFFERENZE STANNO NELL'OUTPUT
 
+########################################################################################################################
+########################################################################################################################
+# TEST GROMOS
+
+print(read_gro_atoms().to_string())
+
+
+########################################################################################################################
+########################################################################################################################
+
 
 # This first part is derived from PSCRIPT_ATP_TOP.PY
 # which creates the bonds, angles and dihedrals FROM THE PEPTIDE SMOG to paste into the new topology file

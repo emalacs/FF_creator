@@ -1,8 +1,8 @@
 ;
-;	File 'topol.top' was generated
+;	File 'prova_pep.top' was generated
 ;	By user: emanuele (1004)
 ;	On host: milano
-;	At date: Tue Mar  3 14:32:24 2020
+;	At date: Thu Mar 12 10:04:13 2020
 ;
 ;	This is a standalone topology file
 ;
@@ -11,9 +11,9 @@
 ;	
 ;	Executable:   /opt/gromacs-2019.5/bin/gmx_mpi
 ;	Data prefix:  /opt/gromacs-2019.5
-;	Working dir:  /home/emanuele/TTR/test_gromos
+;	Working dir:  /home/emanuele/TTR/test_gromos2
 ;	Command line:
-;	  gmx_mpi pdb2gmx -f adjpep.pdb -ignh
+;	  gmx_mpi pdb2gmx -f peptide-coot.pdb -ignh -merge all -o prova_pep -p prova_pep
 ;	Force field was read from current directory or a relative path - path added.
 ;
 
@@ -26,91 +26,91 @@ Protein_chain_A     3
 
 [ atoms ]
 ;   nr       type  resnr residue  atom   cgnr     charge       mass  typeB    chargeB      massB
-     1         N_1     1    TYR      N     1 
-     2        CA_1     1    TYR     CA     2 
-     3        CB_1     1    TYR     CB     3 
-     4        CG_1     1    TYR     CG     4 
-     5       CD1_1     1    TYR    CD1     5 
-     6       CD2_1     1    TYR    CD2     6 
-     7       CE1_1     1    TYR    CE1     7 
-     8       CE2_1     1    TYR    CE2     8 
-     9        CZ_1     1    TYR     CZ     9 
-    10        OH_1     1    TYR     OH    10 
-    11         C_1     1    TYR      C    11 
-    12         O_1     1    TYR      O    12 
-    13         N_2     2    THR      N    13 
-    14        CA_2     2    THR     CA    14 
-    15        CB_2     2    THR     CB    15 
-    16       OG1_2     2    THR    OG1    16 
-    17       CG2_2     2    THR    CG2    17 
-    18         C_2     2    THR      C    18 
-    19         O_2     2    THR      O    19 
-    20         N_3     3    ILE      N    20 
-    21        CA_3     3    ILE     CA    21 
-    22        CB_3     3    ILE     CB    22 
-    23       CG1_3     3    ILE    CG1    23 
-    24       CG2_3     3    ILE    CG2    24 
-    25       CD1_3     3    ILE     CD    25 
-    26         C_3     3    ILE      C    26 
-    27         O_3     3    ILE      O    27 
-    28         N_4     4    ALA      N    28 
-    29        CA_4     4    ALA     CA    29 
-    30        CB_4     4    ALA     CB    30 
-    31         C_4     4    ALA      C    31 
-    32         O_4     4    ALA      O    32 
-    33         N_5     5    ALA      N    33 
-    34        CA_5     5    ALA     CA    34 
-    35        CB_5     5    ALA     CB    35 
-    36         C_5     5    ALA      C    36 
-    37         O_5     5    ALA      O    37 
-    38         N_6     6    LEU      N    38 
-    39        CA_6     6    LEU     CA    39 
-    40        CB_6     6    LEU     CB    40 
-    41        CG_6     6    LEU     CG    41 
-    42       CD1_6     6    LEU    CD1    42 
-    43       CD2_6     6    LEU    CD2    43 
-    44         C_6     6    LEU      C    44 
-    45         O_6     6    LEU      O    45 
-    46         N_7     7    LEU      N    46 
-    47        CA_7     7    LEU     CA    47 
-    48        CB_7     7    LEU     CB    48 
-    49        CG_7     7    LEU     CG    49 
-    50       CD1_7     7    LEU    CD1    50 
-    51       CD2_7     7    LEU    CD2    51 
-    52         C_7     7    LEU      C    52 
-    53         O_7     7    LEU      O    53 
-    54         N_8     8    SER      N    54 
-    55        CA_8     8    SER     CA    55 
-    56        CB_8     8    SER     CB    56 
-    57        OG_8     8    SER     OG    57 
-    58         C_8     8    SER      C    58 
-    59         O_8     8    SER      O    59 
-    60         N_9     9    PRO      N    60 
-    61        CA_9     9    PRO     CA    61 
-    62        CB_9     9    PRO     CB    62 
-    63        CG_9     9    PRO     CG    63 
-    64        CD_9     9    PRO     CD    64 
-    65         C_9     9    PRO      C    65 
-    66         O_9     9    PRO      O    66 
-    67         N_10    10    TYR      N   67 
-    68        CA_10    10    TYR     CA   68 
-    69        CB_10    10    TYR     CB   69 
-    70        CG_10    10    TYR     CG   70 
-    71       CD1_10    10    TYR    CD1   71 
-    72       CD2_10    10    TYR    CD2   72 
-    73       CE1_10    10    TYR    CE1   73 
-    74       CE2_10    10    TYR    CE2   74 
-    75        CZ_10    10    TYR     CZ   75 
-    76        OH_10    10    TYR     OH   76 
-    77         C_10    10    TYR      C   77 
-    78         O_10    10    TYR      O   78 
-    79         N_11    11    SER      N   79 
-    80        CA_11    11    SER     CA   80 
-    81        CB_11    11    SER     CB   81 
-    82        OG_11    11    SER     OG   82 
-    83         C_11    11    SER      C   83 
-    84         O_11    11    SER     O1   84 
-    85       OXT_11    11    SER     O2   85 
+     1          N    105    TYR      N      1      -0.31    14.0067
+     2        CH1    105    TYR     CA      2          0     13.019
+     3        CH2    105    TYR     CB      2          0     14.027
+     4          C    105    TYR     CG      2          0     12.011
+     5          C    105    TYR    CD1      3      -0.14     12.011
+     6          C    105    TYR    CD2      4      -0.14     12.011
+     7          C    105    TYR    CE1      5      -0.14     12.011
+     8          C    105    TYR    CE2      6      -0.14     12.011
+     9          C    105    TYR     CZ      7      0.203     12.011
+    10         OA    105    TYR     OH      7     -0.611    15.9994
+    11          C    105    TYR      C      8       0.45     12.011
+    12          O    105    TYR      O      8      -0.45    15.9994
+    13          N    106    THR      N      9      -0.31    14.0067
+    14        CH1    106    THR     CA     10          0     13.019
+    15        CH1    106    THR     CB     11      0.266     13.019
+    16         OA    106    THR    OG1     11     -0.674    15.9994
+    17        CH3    106    THR    CG2     12          0     15.035
+    18          C    106    THR      C     13       0.45     12.011
+    19          O    106    THR      O     13      -0.45    15.9994
+    20          N    107    ILE      N     14      -0.31    14.0067
+    21        CH1    107    ILE     CA     15          0     13.019
+    22        CH1    107    ILE     CB     16          0     13.019
+    23        CH2    107    ILE    CG1     16          0     14.027
+    24        CH3    107    ILE    CG2     16          0     15.035
+    25        CH3    107    ILE     CD     16          0     15.035
+    26          C    107    ILE      C     17       0.45     12.011
+    27          O    107    ILE      O     17      -0.45    15.9994
+    28          N    108    ALA      N     18      -0.31    14.0067
+    29        CH1    108    ALA     CA     19          0     13.019
+    30        CH3    108    ALA     CB     19          0     15.035
+    31          C    108    ALA      C     20       0.45     12.011
+    32          O    108    ALA      O     20      -0.45    15.9994
+    33          N    109    ALA      N     21      -0.31    14.0067
+    34        CH1    109    ALA     CA     22          0     13.019
+    35        CH3    109    ALA     CB     22          0     15.035
+    36          C    109    ALA      C     23       0.45     12.011
+    37          O    109    ALA      O     23      -0.45    15.9994
+    38          N    110    LEU      N     24      -0.31    14.0067
+    39        CH1    110    LEU     CA     25          0     13.019
+    40        CH2    110    LEU     CB     25          0     14.027
+    41        CH1    110    LEU     CG     26          0     13.019
+    42        CH3    110    LEU    CD1     26          0     15.035
+    43        CH3    110    LEU    CD2     26          0     15.035
+    44          C    110    LEU      C     27       0.45     12.011
+    45          O    110    LEU      O     27      -0.45    15.9994
+    46          N    111    LEU      N     28      -0.31    14.0067
+    47        CH1    111    LEU     CA     29          0     13.019
+    48        CH2    111    LEU     CB     29          0     14.027
+    49        CH1    111    LEU     CG     30          0     13.019
+    50        CH3    111    LEU    CD1     30          0     15.035
+    51        CH3    111    LEU    CD2     30          0     15.035
+    52          C    111    LEU      C     31       0.45     12.011
+    53          O    111    LEU      O     31      -0.45    15.9994
+    54          N    112    SER      N     32      -0.31    14.0067
+    55        CH1    112    SER     CA     33          0     13.019
+    56        CH2    112    SER     CB     34      0.266     14.027
+    57         OA    112    SER     OG     34     -0.674    15.9994
+    58          C    112    SER      C     35       0.45     12.011
+    59          O    112    SER      O     35      -0.45    15.9994
+    60          N    113    PRO      N     36          0    14.0067
+    61        CH1    113    PRO     CA     37          0     13.019
+    62       CH2r    113    PRO     CB     37          0     14.027
+    63       CH2r    113    PRO     CG     38          0     14.027
+    64       CH2r    113    PRO     CD     38          0     14.027
+    65          C    113    PRO      C     39       0.45     12.011
+    66          O    113    PRO      O     39      -0.45    15.9994
+    67          N    114    TYR      N     40      -0.31    14.0067
+    68        CH1    114    TYR     CA     41          0     13.019
+    69        CH2    114    TYR     CB     41          0     14.027
+    70          C    114    TYR     CG     41          0     12.011
+    71          C    114    TYR    CD1     42      -0.14     12.011
+    72          C    114    TYR    CD2     43      -0.14     12.011
+    73          C    114    TYR    CE1     44      -0.14     12.011
+    74          C    114    TYR    CE2     45      -0.14     12.011
+    75          C    114    TYR     CZ     46      0.203     12.011
+    76         OA    114    TYR     OH     46     -0.611    15.9994
+    77          C    114    TYR      C     47       0.45     12.011
+    78          O    114    TYR      O     47      -0.45    15.9994
+    79          N    115    SER      N     48      -0.31    14.0067
+    80        CH1    115    SER     CA     49          0     13.019
+    81        CH2    115    SER     CB     50      0.266     14.027
+    82         OA    115    SER     OG     50     -0.674    15.9994
+    83          C    115    SER      C     51       0.27     12.011
+    84         OM    115    SER     O1     51     -0.635    15.9994
+    85         OM    115    SER     O2     51     -0.635    15.9994
 
 [ bonds ]
 ;  ai    aj funct            c0            c1            c2            c3
@@ -201,6 +201,142 @@ Protein_chain_A     3
    81    82     2    gb_18
    83    84     2    gb_6
    83    85     2    gb_6
+
+[ pairs ]
+;  ai    aj funct            c0            c1            c2            c3
+    1     4     1 
+    1    12     1 
+    1    13     1 
+    2     5     1 
+    2     6     1 
+    2    14     1 
+    3     7     1 
+    3     8     1 
+    3    12     1 
+    3    13     1 
+    4     9     1 
+    4    11     1 
+    5     8     1 
+    5    10     1 
+    6     7     1 
+    6    10     1 
+   11    15     1 
+   11    18     1 
+   12    14     1 
+   13    16     1 
+   13    17     1 
+   13    19     1 
+   13    20     1 
+   14    21     1 
+   15    19     1 
+   15    20     1 
+   16    18     1 
+   17    18     1 
+   18    22     1 
+   18    26     1 
+   19    21     1 
+   20    23     1 
+   20    24     1 
+   20    27     1 
+   20    28     1 
+   21    25     1 
+   21    29     1 
+   22    27     1 
+   22    28     1 
+   23    26     1 
+   24    25     1 
+   24    26     1 
+   26    30     1 
+   26    31     1 
+   27    29     1 
+   28    32     1 
+   28    33     1 
+   29    34     1 
+   30    32     1 
+   30    33     1 
+   31    35     1 
+   31    36     1 
+   32    34     1 
+   33    37     1 
+   33    38     1 
+   34    39     1 
+   35    37     1 
+   35    38     1 
+   36    40     1 
+   36    44     1 
+   37    39     1 
+   38    41     1 
+   38    45     1 
+   38    46     1 
+   39    42     1 
+   39    43     1 
+   39    47     1 
+   40    45     1 
+   40    46     1 
+   41    44     1 
+   44    48     1 
+   44    52     1 
+   45    47     1 
+   46    49     1 
+   46    53     1 
+   46    54     1 
+   47    50     1 
+   47    51     1 
+   47    55     1 
+   48    53     1 
+   48    54     1 
+   49    52     1 
+   52    56     1 
+   52    58     1 
+   53    55     1 
+   54    57     1 
+   54    59     1 
+   54    60     1 
+   55    61     1 
+   55    64     1 
+   56    59     1 
+   56    60     1 
+   57    58     1 
+   58    62     1 
+   58    63     1 
+   58    65     1 
+   59    61     1 
+   59    64     1 
+   60    66     1 
+   60    67     1 
+   61    68     1 
+   62    66     1 
+   62    67     1 
+   63    65     1 
+   64    65     1 
+   65    69     1 
+   65    77     1 
+   66    68     1 
+   67    70     1 
+   67    78     1 
+   67    79     1 
+   68    71     1 
+   68    72     1 
+   68    80     1 
+   69    73     1 
+   69    74     1 
+   69    78     1 
+   69    79     1 
+   70    75     1 
+   70    77     1 
+   71    74     1 
+   71    76     1 
+   72    73     1 
+   72    76     1 
+   77    81     1 
+   77    83     1 
+   78    80     1 
+   79    82     1 
+   79    84     1 
+   79    85     1 
+   81    84     1 
+   81    85     1 
+   82    83     1 
 
 [ angles ]
 ;  ai    aj    ak funct            c0            c1            c2            c3
@@ -454,4 +590,4 @@ Protein
 
 [ molecules ]
 ; Compound        #mols
-Protein_chain_A     64
+Protein_chain_A     1
