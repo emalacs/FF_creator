@@ -6,17 +6,6 @@ from atomtypes_aa_definitions import *
 # SAREBBE DA RIFARE LA GESTIONE DELL'INPUT. IN QUESTO MODO VIENE LETTO TUTTO UNA VOLTA, MODIFICATO UNA VOLTA E POI
 # LE DIFFERENZE STANNO NELL'OUTPUT
 
-########################################################################################################################
-########################################################################################################################
-# TEST GROMOS
-
-#print(read_gro_atoms().to_string())
-
-# Dictionaries from gromos topology
-#gromos_mass_dict, gromos_res_atom_dict, dict_gro_atomtypes = make_gromos_topology_dictionaries(read_gro_atoms(), read_gro_impropers())
-
-########################################################################################################################
-########################################################################################################################
 
 
 # This first part is derived from PSCRIPT_ATP_TOP.PY
@@ -67,7 +56,7 @@ pep_ff_bonds = ffbonded_bonds(read_pep_bonds(), dict_pep_atomtypes, dict_pep_ami
 pep_ff_angles = ffbonded_angles(read_pep_angles(), dict_pep_atomtypes, dict_pep_aminores)
 
 #pep_dihedrals = read_pep_dihedrals()
-pep_ff_dihedrals = ffbonded_dihedrals(read_pep_dihedrals(), dict_pep_atomtypes, dict_pep_aminores)
+pep_ff_dihedrals = ffbonded_dihedrals(read_pep_dihedrals(), dict_pep_atomtypes) # dict_pep_aminores
 
 write_pep_ffbonded(pep_ff_bonds, pep_ff_angles, pep_ff_dihedrals)
 
@@ -106,7 +95,7 @@ fib_ff_bonds = ffbonded_bonds(read_fib_bonds(), dict_fib_atomtypes, dict_fib_ami
 fib_ff_angles = ffbonded_angles(read_fib_angles(), dict_fib_atomtypes, dict_fib_aminores)
 
 #fib_dihedrals = read_fib_dihedrals()
-fib_ff_dihedrals = ffbonded_dihedrals(read_fib_dihedrals(), dict_fib_atomtypes, dict_fib_aminores)
+fib_ff_dihedrals = ffbonded_dihedrals(read_fib_dihedrals(), dict_fib_atomtypes) # dict_fib_aminores
 
 write_fib_ffbonded(fib_ff_bonds, fib_ff_angles, fib_ff_dihedrals)
 
@@ -143,3 +132,20 @@ write_merge_ffnonbonded(atomtypes, merge_pairs)
 print('Merge ffnonbonded.itp created')
 print('')
 print('All the three Force Fields are ready. Charlie is super happy!!!')
+
+
+########################################################################################################################
+########################################################################################################################
+# TEST GROMOS
+
+#print(read_gro_atoms().to_string())
+
+# Dictionaries from gromos topology
+#gromos_mass_dict, gromos_res_atom_dict, dict_gro_atomtypes = make_gromos_topology_dictionaries(read_gro_atoms(), read_gro_impropers())
+
+propers_to_gro, pairs_to_gro = smog_to_gromos(read_fib_dihedrals(), read_fib_pairs(), dict_fib_aminores)
+
+
+########################################################################################################################
+########################################################################################################################
+

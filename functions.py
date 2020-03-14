@@ -41,6 +41,35 @@ def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     return atp, atomtypes, dict_atomtypes, dict_aminores
 
 
+# Dictionaries and definitions obtained from gromos topology.
+# Gromos chemical type and mass
+def smog_gromos_at_num_converter(fib_ff_dihedrals, fib_ff_pairs):
+    # Here a dictionary is created using at_numSMOG:at_numGRO, because we want to use the gromacs topology
+    # using the SMOG proper dihedrals and pairs.
+    print(fib_ff_dihedrals)
+
+
+    # Se è un convertitore mi basta mettere SMOG proper e SMOG pairs
+
+    # SMOG propers handling
+
+
+
+    # SMOG fibril_pairs handling
+
+
+
+
+    at_num_dict = pd.DataFrame()
+    #at_num_dict['SMOG'] = SMOG_pep_atoms['; nr']
+
+
+    print(at_num_dict.to_string())
+
+    return proper_to_gro, pairs_to_gro
+
+
+
 # Function for topology
 
 def make_topology_bonds(top_bonds):
@@ -164,7 +193,33 @@ def ffbonded_angles_backup(angles, dict_atomtypes):
     return angles
 
 
-def ffbonded_dihedrals(dihedrals, dict_atomtypes, dict_aminores):
+def smog_to_gromos(dihedrals, pairs, dict_aminores):
+    # Selection of proper dihedrals, the one which SMOG creates and specific
+    proper_dihedrals = dihedrals.loc[dihedrals['func'] == 1]
+    # This is the same thing of ffbonded_dihedrals but using a different dictionary
+    # to perform transformations
+    proper_dihedrals[";ai"].replace(dict_aminores, inplace = True)
+    proper_dihedrals["aj"].replace(dict_aminores, inplace = True)
+    proper_dihedrals["ak"].replace(dict_aminores, inplace = True)
+    proper_dihedrals["al"].replace(dict_aminores, inplace = True)
+    proper_dihedrals.to_string(index = False)
+    proper_dihedrals['Kd'] = proper_dihedrals['Kd'] * (300 / 70)
+    phi0_notation = proper_dihedrals["phi0"].map(lambda x:'{:.9e}'.format(x))
+    kd_notation = proper_dihedrals["Kd"].map(lambda x:'{:.9e}'.format(x))
+    proper_dihedrals = proper_dihedrals.assign(phi0 = phi0_notation)
+    proper_dihedrals = proper_dihedrals.assign(Kd = kd_notation)
+    proper_dihedrals["func"] = proper_dihedrals["func"].replace(1, 9)
+    proper_dihedrals.columns = ["; ai", "aj", "ak", "al", "func", "phi", "kd", "mult"]
+
+    proper_dihedrals['; ai'].replace(dict_gro_atomtypes['; nr'], inplace = True)
+
+
+
+
+    return proper_dihedrals
+
+
+def ffbonded_dihedrals_prova_not_working(dihedrals, dict_atomtypes, dict_aminores):
     # Changing the atomnumber with the atomtype defined in the dictionary
     # Separation of the impropers and the propers. The propers will be replaced by gromos values
     proper_dihedrals = dihedrals.loc[dihedrals['func'] == 1]
@@ -188,19 +243,13 @@ def ffbonded_dihedrals(dihedrals, dict_atomtypes, dict_aminores):
     improper_dihedrals.to_string(index=False)
     improper_dihedrals['dihedrals'] = improper_dihedrals["ai_aminores"] + '+' + improper_dihedrals["aj_aminores"] + '+' +\
                              improper_dihedrals["ak_aminores"] + '+' + improper_dihedrals["al_aminores"]
-    print(improper_dihedrals)
+    #print(improper_dihedrals)
     improper_dihedrals['dihedrals'].replace(dict_gro_impropers, inplace = True)
-    print(improper_dihedrals.to_string())
-
-
-
-
-
-
+    #print(improper_dihedrals.to_string())
     return dihedrals
 
 
-def ffbonded_dihedrals_backup(dihedrals, dict_atomtypes):
+def ffbonded_dihedrals(dihedrals, dict_atomtypes):
     # dihedrals = inp_dihedrals.copy()
     # Changing the atomnumber with the atomtype defined in the dictionary
     dihedrals[";ai"].replace(dict_atomtypes, inplace = True)

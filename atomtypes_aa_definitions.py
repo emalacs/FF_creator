@@ -1,7 +1,6 @@
 import pandas as pd
 from read_input_files import *
 
-
 # Script containing the definitions of the atomtypes of every aminoacid used in here. Taken from gromos/aminoacids.rtp
 # along with the mass and c12 for every atomtype contained in Gromos
 
@@ -12,20 +11,16 @@ from read_input_files import *
 
 # GROMOS 53a6
 
-
-
-
-
-# Dictionaries and definitions obtained from gromos topology.
-# Gromos chemical type and mass
+# Gromos dictionary of residue_atom : chemical type
 gro_atoms = read_gro_atoms()
-print(gro_atoms)
-gromos_mass = gro_atoms[['type', 'mass']].drop_duplicates(subset = ['type'], keep = 'first').copy()
+gromos_mass = gro_atoms[['type', 'mass']].drop_duplicates(subset=['type'], keep='first').copy()
 gromos_mass_dict = gromos_mass.set_index('type')['mass'].to_dict()
 print('RICORDATI DI CAMBIARE LE MASSE NEL FF, QUI GLI H SONO TUTTI ESPLICITI!!!!')
-
-# Gromos dictionary of residue_atom : chemical type
 gromos_res_atom_dict = gro_atoms.set_index('res_atom')['type'].to_dict()
+
+gromos_resatom_nmr_dict = gro_atoms.set_index('res_atom')['; nr'].to_dict()
+print(len(gromos_resatom_nmr_dict))
+print(gromos_resatom_nmr_dict)
 
 # Gromos impropers dictionary residue_atom to : define
 dict_gro_atomtypes = gro_atoms.set_index('; nr')['res_atom'].to_dict()
@@ -37,13 +32,6 @@ gro_impropers['al'].replace(dict_gro_atomtypes, inplace = True)
 gro_impropers['dihedrals'] = gro_impropers['; ai'] + '+' + gro_impropers['aj'] + '+' +\
                              gro_impropers['ak'] + '+' + gro_impropers['al']
 dict_gro_impropers = gro_impropers.set_index('dihedrals')['define'].to_dict()
-print(dict_gro_impropers)
-
-
-
-
-
-
 
 # THE C12 RATIO CHANGED a little bit.
 gromos_atp = pd.DataFrame(
