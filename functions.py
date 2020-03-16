@@ -15,6 +15,8 @@ def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     dict_atomtypes = atomtypes.set_index("; nr")["type"].to_dict()
         # Handling the information from the topology atomtypes
     atomtypes['at.group'] = atomtypes['residue'] + '_' + atomtypes['atom']
+    atomtypes['smog_to_gro'] = atomtypes['at.group'] + '_' + atomtypes['resnr'].astype(str)
+    smog_to_gro_dict = atomtypes.set_index('; nr')['smog_to_gro'].to_dict()
     # Creation of a dictionary which associates the atom number to the aminoacid and the atom type
     dict_aminores = atomtypes.set_index('; nr')['at.group'].to_dict()
     # Addition of the information from gromos FF (gromos_atp from atomtypes_aa_definitions.py)
@@ -32,42 +34,13 @@ def make_atomtypes_and_dict(atomtypes):  # qui si mette l'output di read_*_atoms
     c12_notation = atomtypes["c12"].map(lambda x:'{:.6e}'.format(x))
     # Removing all the unnecessary columns or duplicated columns in order to prepare the atomtypes for ffnonbonded.itp
     atomtypes = atomtypes.assign(c12 = c12_notation)
-    atomtypes.drop(columns = ['; nr', 'resnr', 'residue', 'atom', 'cgnr', 'at.group'], inplace = True)
+    atomtypes.drop(columns = ['; nr', 'resnr', 'residue', 'atom', 'cgnr', 'at.group', 'smog_to_gro'], inplace = True)
     atomtypes.rename(columns = {'type':'; type'}, inplace = True)
     # Since this function is made also for fibrils, a drop duplicate is required, but does not affect the peptide FF
     atomtypes = atomtypes.drop_duplicates(subset = '; type', keep = 'first')
     # This last function creates the atomtype for atomtypes.atp
     atp = pd.DataFrame(atomtypes, columns = ['; type', 'mass'])
-    return atp, atomtypes, dict_atomtypes, dict_aminores
-
-
-# Dictionaries and definitions obtained from gromos topology.
-# Gromos chemical type and mass
-def smog_gromos_at_num_converter(fib_ff_dihedrals, fib_ff_pairs):
-    # Here a dictionary is created using at_numSMOG:at_numGRO, because we want to use the gromacs topology
-    # using the SMOG proper dihedrals and pairs.
-    print(fib_ff_dihedrals)
-
-
-    # Se è un convertitore mi basta mettere SMOG proper e SMOG pairs
-
-    # SMOG propers handling
-
-
-
-    # SMOG fibril_pairs handling
-
-
-
-
-    at_num_dict = pd.DataFrame()
-    #at_num_dict['SMOG'] = SMOG_pep_atoms['; nr']
-
-
-    print(at_num_dict.to_string())
-
-    return proper_to_gro, pairs_to_gro
-
+    return atp, atomtypes, dict_atomtypes, dict_aminores, smog_to_gro_dict
 
 
 # Function for topology
@@ -193,29 +166,31 @@ def ffbonded_angles_backup(angles, dict_atomtypes):
     return angles
 
 
-def smog_to_gromos(dihedrals, pairs, dict_aminores):
-    # Selection of proper dihedrals, the one which SMOG creates and specific
-    proper_dihedrals = dihedrals.loc[dihedrals['func'] == 1]
-    # This is the same thing of ffbonded_dihedrals but using a different dictionary
-    # to perform transformations
-    proper_dihedrals[";ai"].replace(dict_aminores, inplace = True)
-    proper_dihedrals["aj"].replace(dict_aminores, inplace = True)
-    proper_dihedrals["ak"].replace(dict_aminores, inplace = True)
-    proper_dihedrals["al"].replace(dict_aminores, inplace = True)
-    proper_dihedrals.to_string(index = False)
+def smog_to_gromos_dihedrals(pep_dihedrals, fib_dihedrals, smog_to_gro_dict): # similar from ffbonded_merge_dihedrals
+    # Selection of proper dihedrals from peptide and fibril to create a merged dihedrals,
+    # the one which SMOG creates with specific values and to be pasted into Gromacs
+    pep_dihedrals = pep_dihedrals.loc[pep_dihedrals['func'] == 1]
+    fib_dihedrals = fib_dihedrals.loc[fib_dihedrals['func'] == 1]
+    proper_dihedrals = pep_dihedrals.append(fib_dihedrals, sort = False, ignore_index = True)
+    proper_dihedrals.loc[:, 'Kd'] = proper_dihedrals.loc[:, 'Kd'].divide(2)
     proper_dihedrals['Kd'] = proper_dihedrals['Kd'] * (300 / 70)
+    # Actually the thing is on merged dihedrals
+    proper_dihedrals[";ai"].replace(smog_to_gro_dict, inplace = True)
+    proper_dihedrals["aj"].replace(smog_to_gro_dict, inplace = True)
+    proper_dihedrals["ak"].replace(smog_to_gro_dict, inplace = True)
+    proper_dihedrals["al"].replace(smog_to_gro_dict, inplace = True)
+    # This double dictionary was necessary to map properly the atoms
+    proper_dihedrals[";ai"].replace(gromos_resatom_nmr_dict, inplace=True)
+    proper_dihedrals["aj"].replace(gromos_resatom_nmr_dict, inplace=True)
+    proper_dihedrals["ak"].replace(gromos_resatom_nmr_dict, inplace=True)
+    proper_dihedrals["al"].replace(gromos_resatom_nmr_dict, inplace=True)
+    proper_dihedrals.to_string(index = False)
     phi0_notation = proper_dihedrals["phi0"].map(lambda x:'{:.9e}'.format(x))
     kd_notation = proper_dihedrals["Kd"].map(lambda x:'{:.9e}'.format(x))
     proper_dihedrals = proper_dihedrals.assign(phi0 = phi0_notation)
     proper_dihedrals = proper_dihedrals.assign(Kd = kd_notation)
     proper_dihedrals["func"] = proper_dihedrals["func"].replace(1, 9)
     proper_dihedrals.columns = ["; ai", "aj", "ak", "al", "func", "phi", "kd", "mult"]
-
-    proper_dihedrals['; ai'].replace(dict_gro_atomtypes['; nr'], inplace = True)
-
-
-
-
     return proper_dihedrals
 
 

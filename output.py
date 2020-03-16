@@ -139,3 +139,12 @@ def write_merge_ffnonbonded(atomtypes, merge_pairs):
     file.write("[ nonbond_params ]\n")
     file.write(str(merge_pairs.to_string(index = False)))
     file.close()
+
+
+def write_smog_to_gromos_dihedrals(propers_to_gro):
+    # This function creates the angles file to paste into the topology
+    file = open("output/smog_to_gromos_dihedrals", "w")
+    file.write("[ dihedrals ]")
+    file.write("\n")
+    file.write(str(propers_to_gro.to_string(index = False)))
+    file.close()

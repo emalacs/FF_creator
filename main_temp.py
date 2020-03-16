@@ -34,7 +34,7 @@ print('')
 print('atomtype.atp creation')
 
 #pep_atoms = read_pep_atoms()
-atp, atomtypes, dict_pep_atomtypes, dict_pep_aminores = make_atomtypes_and_dict(read_pep_atoms())
+atp, atomtypes, dict_pep_atomtypes, dict_pep_aminores, pep_smog_to_gro_dict = make_atomtypes_and_dict(read_pep_atoms())
 
 write_atomtypes_atp(atp)
 
@@ -83,7 +83,7 @@ print('Preparing the fibril ffbonded.itp')
 # Making a dictionary out of it to change the atomnumber to the atomtype
 # The dictionary is based on the fibril atoms
 #fib_atoms = read_fib_atoms()
-atp, atomtypes, dict_fib_atomtypes, dict_fib_aminores = make_atomtypes_and_dict(read_fib_atoms())
+atp, atomtypes, dict_fib_atomtypes, dict_fib_aminores, fib_smog_to_gro_dict = make_atomtypes_and_dict(read_fib_atoms())
 
 # vimdiff ok, sono lo stesso file che c'e nel peptide
 
@@ -133,7 +133,7 @@ print('Merge ffnonbonded.itp created')
 print('')
 print('All the three Force Fields are ready. Charlie is super happy!!!')
 
-
+print(merge_dihedrals)
 ########################################################################################################################
 ########################################################################################################################
 # TEST GROMOS
@@ -143,7 +143,8 @@ print('All the three Force Fields are ready. Charlie is super happy!!!')
 # Dictionaries from gromos topology
 #gromos_mass_dict, gromos_res_atom_dict, dict_gro_atomtypes = make_gromos_topology_dictionaries(read_gro_atoms(), read_gro_impropers())
 
-propers_to_gro, pairs_to_gro = smog_to_gromos(read_fib_dihedrals(), read_fib_pairs(), dict_fib_aminores)
+propers_to_gro = smog_to_gromos_dihedrals(read_pep_dihedrals(), read_fib_dihedrals(), fib_smog_to_gro_dict)
+
 
 
 ########################################################################################################################

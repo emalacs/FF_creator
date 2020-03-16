@@ -11,19 +11,32 @@ from read_input_files import *
 
 # GROMOS 53a6
 
-# Gromos dictionary of residue_atom : chemical type
+# Gromos dictionaries defintions of:
+    # dict_gro_atomtypes -> number:residue_atom 1:TYR_N
+    # gromos_mass -> atom_type:mass N:150067
+    # res_atom_dict -> residue_atom:chemical type TYR_N:N
 gro_atoms = read_gro_atoms()
-gromos_mass = gro_atoms[['type', 'mass']].drop_duplicates(subset=['type'], keep='first').copy()
-gromos_mass_dict = gromos_mass.set_index('type')['mass'].to_dict()
-print('RICORDATI DI CAMBIARE LE MASSE NEL FF, QUI GLI H SONO TUTTI ESPLICITI!!!!')
-gromos_res_atom_dict = gro_atoms.set_index('res_atom')['type'].to_dict()
+dict_gro_atomtypes = gro_atoms.set_index('; nr')['res_atom'].to_dict()
 
-gromos_resatom_nmr_dict = gro_atoms.set_index('res_atom')['; nr'].to_dict()
-print(len(gromos_resatom_nmr_dict))
+gromos_mass = gro_atoms[['type', 'mass']].drop_duplicates(subset=['type'], keep='first').copy()
+gromos_mass_dict = gromos_mass.set_index('type')['mass'].to_dict() # This one will be used in make_atomtypes
+
+print('RICORDATI DI CAMBIARE LE MASSE NEL FF, QUI GLI H SONO TUTTI ESPLICITI!!!!')
+gromos_res_atom_dict = gro_atoms.set_index('res_atom')['type'].to_dict() # This one will be used in make_atomtypes
+# This one will be used for proper dihedrals from SMOG to past to GROMOS topology
+gromos_resatom_nmr = gro_atoms[['res_atom', 'resnr', '; nr']].copy()
+gromos_resatom_nmr['resnr_2'] = gromos_resatom_nmr['resnr'].astype(str)
+gromos_resatom_nmr['res_atom'] = gromos_resatom_nmr['res_atom'] + '_' + gromos_resatom_nmr['resnr_2']
+gromos_resatom_nmr_dict = gromos_resatom_nmr.set_index('res_atom')['; nr'].to_dict()
+
+
 print(gromos_resatom_nmr_dict)
+#gromos_resatom_nmr_dict = gro_atoms.set_index('res_atom')['; nr']#.to_dict()
+
+
+print(len(gromos_resatom_nmr_dict))
 
 # Gromos impropers dictionary residue_atom to : define
-dict_gro_atomtypes = gro_atoms.set_index('; nr')['res_atom'].to_dict()
 gro_impropers = read_gro_impropers()
 gro_impropers['; ai'].replace(dict_gro_atomtypes, inplace = True)
 gro_impropers['aj'].replace(dict_gro_atomtypes, inplace = True)
