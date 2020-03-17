@@ -133,7 +133,6 @@ print('Merge ffnonbonded.itp created')
 print('')
 print('All the three Force Fields are ready. Charlie is super happy!!!')
 
-print(merge_dihedrals)
 ########################################################################################################################
 ########################################################################################################################
 # TEST GROMOS
@@ -145,7 +144,9 @@ print(merge_dihedrals)
 
 propers_to_gro = smog_to_gromos_dihedrals(read_pep_dihedrals(), read_fib_dihedrals(), fib_smog_to_gro_dict)
 
+write_smog_to_gromos_dihedrals(propers_to_gro)
 
+print('SMOG to GROMOS proper dihedrals ready!')
 
 ########################################################################################################################
 ########################################################################################################################
