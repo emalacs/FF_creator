@@ -130,8 +130,7 @@ merge_pairs = ffnonbonded_merge_pairs(read_pep_pairs(), read_fib_pairs(), dict_p
 write_merge_ffnonbonded(atomtypes, merge_pairs)
 
 print('Merge ffnonbonded.itp created')
-print('')
-print('All the three Force Fields are ready. Charlie is super happy!!!')
+
 
 ########################################################################################################################
 ########################################################################################################################
@@ -142,8 +141,15 @@ print('All the three Force Fields are ready. Charlie is super happy!!!')
 # Dictionaries from gromos topology
 #gromos_mass_dict, gromos_res_atom_dict, dict_gro_atomtypes = make_gromos_topology_dictionaries(read_gro_atoms(), read_gro_impropers())
 
-propers_to_gro = smog_to_gromos_dihedrals(read_pep_dihedrals(), read_fib_dihedrals(), fib_smog_to_gro_dict)
+print('Writing of the topology atomtypes section to use in GROMOS.top')
 
+gromos_top = gromos_topology(read_gro_atoms())
+write_gromos_topology(gromos_top)
+
+
+print('Writing dihedrals from SMOG to GROMOS')
+
+propers_to_gro = smog_to_gromos_dihedrals(read_pep_dihedrals(), read_fib_dihedrals(), fib_smog_to_gro_dict)
 write_smog_to_gromos_dihedrals(propers_to_gro)
 
 print('SMOG to GROMOS proper dihedrals ready!')
@@ -151,3 +157,5 @@ print('SMOG to GROMOS proper dihedrals ready!')
 ########################################################################################################################
 ########################################################################################################################
 
+print('')
+print('All the three Force Fields are ready. Charlie is super happy!!!')

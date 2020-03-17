@@ -148,3 +148,12 @@ def write_smog_to_gromos_dihedrals(propers_to_gro):
     file.write("\n")
     file.write(str(propers_to_gro.to_string(index = False)))
     file.close()
+
+
+def write_gromos_topology(gromos_topology):
+    # This function creates the angles file to paste into the topology
+    file = open("output/topology_gromos", "w")
+    file.write("[ atoms ]")
+    file.write("\n")
+    file.write(str(gromos_topology.to_string(index = False)))
+    file.close()

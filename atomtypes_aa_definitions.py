@@ -30,12 +30,7 @@ gromos_resatom_nmr['res_atom'] = gromos_resatom_nmr['res_atom'] + '_' + gromos_r
 gromos_resatom_nmr_dict = gromos_resatom_nmr.set_index('res_atom')['; nr'].to_dict()
 
 
-print(gromos_resatom_nmr_dict)
-#gromos_resatom_nmr_dict = gro_atoms.set_index('res_atom')['; nr']#.to_dict()
-
-
-print(len(gromos_resatom_nmr_dict))
-
+# QUESTO SOTTO MI SA CHE SI PUò CANCELLARE
 # Gromos impropers dictionary residue_atom to : define
 gro_impropers = read_gro_impropers()
 gro_impropers['; ai'].replace(dict_gro_atomtypes, inplace = True)
