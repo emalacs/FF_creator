@@ -203,8 +203,6 @@ def gromos_topology(gro_atoms):
     gro_atoms['typeB'] = ''
     gro_atoms['chargeB'] = ''
     gro_atoms['massB'] = ''
-    print(gro_atoms)
-
     return gro_atoms
 
 # QUESTO SOTTO DA CANCELLARE
