@@ -166,6 +166,19 @@ def ffbonded_angles_backup(angles, dict_atomtypes):
     return angles
 
 
+def gromos_topology(gro_atoms):
+    # This function basically prepares the atomtypes section of gromos topology
+    # It will be pasted into the topology along with the dihedrals
+    gro_atoms['type'] = gro_atoms['atom_nmr']
+    gro_atoms = gro_atoms.drop(['atom_nmr', 'res_atom'], axis=1)
+    gro_atoms['mass'] = ''
+    gro_atoms['charge'] = ''
+    gro_atoms['typeB'] = ''
+    gro_atoms['chargeB'] = ''
+    gro_atoms['massB'] = ''
+    return gro_atoms
+
+
 def smog_to_gromos_dihedrals(pep_dihedrals, fib_dihedrals, smog_to_gro_dict): # similar from ffbonded_merge_dihedrals
     # Selection of proper dihedrals from peptide and fibril to create a merged dihedrals,
     # the one which SMOG creates with specific values and to be pasted into Gromacs
@@ -193,17 +206,6 @@ def smog_to_gromos_dihedrals(pep_dihedrals, fib_dihedrals, smog_to_gro_dict): # 
     proper_dihedrals.columns = ["; ai", "aj", "ak", "al", "func", "phi", "kd", "mult"]
     return proper_dihedrals
 
-def gromos_topology(gro_atoms):
-    # This function basically prepares the atomtypes section of gromos topology
-    # It will be pasted into the topology along with the dihedrals
-    gro_atoms['type'] = gro_atoms['atom_nmr']
-    gro_atoms = gro_atoms.drop(['atom_nmr', 'res_atom'], axis=1)
-    gro_atoms['mass'] = ''
-    gro_atoms['charge'] = ''
-    gro_atoms['typeB'] = ''
-    gro_atoms['chargeB'] = ''
-    gro_atoms['massB'] = ''
-    return gro_atoms
 
 # QUESTO SOTTO DA CANCELLARE
 def ffbonded_dihedrals_prova_not_working(dihedrals, dict_atomtypes, dict_aminores):
