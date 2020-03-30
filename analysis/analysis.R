@@ -6,6 +6,9 @@
 library(tidyverse)
 library(reshape2)
 library(hexbin)
+library(gridExtra)
+library(grid)
+library(ggforce)
 
 nclust <- read.table(file = "analysis/histo-time.dat", header = FALSE, dec = ".")
 
@@ -25,56 +28,105 @@ clust_size <- paste0(s, "_", clust_size)
 colnames(nclust) <- clust_size
 
 # Subset to create an histogram and compare with wet lab results
-histogram <- subset(nclust, select = size_2:size_25)
-is_a_fibril <- subset(nclust, select = size_25:ncol(nclust))
-histogram <- cbind(histogram, total = rowSums(is_a_fibril))
-total <- cbind(total = rowSums(is_a_fibril))
+histogram <- subset(nclust, select = size_2:ncol(nclust))
+#is_a_fibril <- subset(nclust, select = size_25:ncol(nclust))
+#histogram <- cbind(histogram, total = rowSums(is_a_fibril))
+total <- cbind(total = rowSums(histogram))
 total_to_plot <- melt(total, varnames = c("time", "fibril"))
-
-
-
-# Fibril histogram
-ggplot(data = total_to_plot, aes(x = time, y = value)) + geom_col(aes(fill = value)) +
-  scale_fill_gradient(low = "#AC80A0", high = "#0471A6", name = "Fibril MW") +
-  theme_bw() +
-  scale_y_discrete(name = "Fibril MW")
-
 
 # Matrix of the entire clustsize to make the heatmap
 matrix_nclust <- melt(nclust, varnames = c("time", "cluster_size"))
 colnames(matrix_nclust)[3] <- "cluster_amount_MW"
 matrix_nclust[matrix_nclust == 0] <- NA
 
-# QUESTA è UN'IDEA MOLTO CARINA MA STO AVENDO UN ATTIMO DI PROBLEMI
-ggplot(data = matrix_nclust, aes(x = time, y = cluster_size)) + geom_point(aes(size = cluster_amount_MW,
-                                                                               colour = cluster_amount_MW),
-                                                                           alpha = 1/50) +
-  scale_y_discrete(breaks = c("size_100", "size_200", "size_300", "size_400", "size_500", "size_600", "size_700"),
-                   name = "Molecules in a Cluster") +
-  scale_radius(guide = "none") +
-  scale_colour_gradient(low = "#AC80A0", high = "#0471A6", na.value = "white", name = "Amount", guide = "none") +
-  theme_bw() +
-  expand_limits(y = 700)
+# Fibril histogram
+histo_plot <- ggplot(data = total_to_plot, aes(x = time, y = value)) + geom_col(aes(fill = time)) +
+  scale_fill_gradient(low = "#AC80A0", high = "#0471A6", guide = "none", limits = c(275, nrow(total_to_plot))) +
+  scale_y_continuous(name = "Fibril MW", breaks = c(0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500,
+                                                    550, 600, 650, 700, 750, 800, 850, 900, 1000)) +
+  theme(panel.background = element_rect(fill = "transparent", colour = "black"),
+        panel.grid.major = element_line(colour = "grey90"))
 
-
-# QUESTO CI PIACE, AL MOMENTO LO LASCIO COSì. SI PUò TOGLIERE IL COLORE IN BASE ALLA DIMENSIONE PERCHé TANTO è 2D
-ggplot(data = matrix_nclust, aes(x = time, y = cluster_size)) + geom_raster(aes(fill = cluster_amount_MW)) + # ok
-  scale_fill_gradient(low = "#AC80A0", high = "#0471A6", na.value = "white", guide = "none") + # Questo va bene
+# HEAT MAP
+heat_clust <- ggplot(data = matrix_nclust, aes(x = time, y = cluster_size)) +
+  geom_raster(aes(fill = cluster_amount_MW)) +
+  scale_fill_gradient(low = "#AC80A0", high = "#0471A6", na.value = "transparent", guide = "none") + # Questo va bene
   scale_y_discrete(breaks = c("size_100", "size_200", "size_300", "size_400", "size_500", "size_600"),
-                   name = "Molecules in a Cluster") +
+                   name = "Molecules in a Cluster", labels = c("size_100" = "100", "size_200" = "200",
+                                                               "size_300" = "300", "size_400" = "400",
+                                                               "size_500" = "500", "size_600" = "600")) +
   labs(title = "Heat map of fibrils elongation", fill = "Amount") +
-  expand_limits(y = 700) +
-  theme_bw()
+  scale_x_continuous(name = "Time (ns)") +
+  theme(panel.background = element_rect(fill = "transparent", colour = "black"),
+        panel.grid.major = element_line(colour = "grey90"))
+
+
+
+# Merged ones
+histo_merge <- ggplot(data = total_to_plot, aes(x = time, y = value)) + geom_col(aes(fill = time)) +
+  scale_fill_gradient(low = "#AC80A0", high = "#0471A6", guide = "none", limits = c(275, nrow(total_to_plot))) +
+  scale_y_continuous(name = "Fibril MW") +
+  theme(axis.title.x = element_blank(), axis.text.x = element_blank(),
+        panel.background = element_rect(fill = "transparent", colour = "black"),
+        panel.grid.major = element_line(colour = "grey90"))
+
+heat_merge <- ggplot(data = matrix_nclust, aes(x = time, y = cluster_size)) +
+  geom_raster(aes(fill = cluster_amount_MW)) +
+  scale_fill_gradient(low = "#AC80A0", high = "#0471A6", na.value = "transparent", guide = "none") +
+  scale_y_discrete(breaks = c("size_100", "size_200", "size_300", "size_400", "size_500", "size_600"),
+                   name = "Molecules nmr x MW", labels = c("size_100" = "100", "size_200" = "200",
+                                                           "size_300" = "300", "size_400" = "400",
+                                                           "size_500" = "500", "size_600" = "600")) +
+  scale_x_continuous(name = "Time (ns)") +
+  theme(panel.background = element_rect(fill = "transparent", colour = "black"),
+        panel.grid.major = element_line(colour = "grey90"))
+
+
+heat_clust
+merge_plot <- grid.newpage()
+merge_plot <- grid.draw(rbind(ggplotGrob(histo_merge), ggplotGrob(heat_merge), size = "last"))
+
+heat_zoom <- heat_clust + facet_grid() + coord_cartesian(xlim = c(200,500), ylim = c(0,50)) +
+  scale_y_discrete(breaks = c("size_5", "size_10", "size_15", "size_20", "size_25", "size_30", "size_35", "size_40", "size_45",
+                              "size_50", name = "none")) +
+  scale_x_continuous(breaks = c(200, 250, 275, 300, 350, 400, 450, 500))
+merge_zoom <- grid.newpage()
+merge_zoom <- grid.draw(rbind(ggplotGrob(heat_merge), ggplotGrob(heat_zoom), size = "last"))
+histo_plot
+
+
+
+
+
+
+
+
+
+
+
+# CIMITERO DEGLI ELEFANTI
+# QUESTA è UN'IDEA MOLTO CARINA MA STO AVENDO UN ATTIMO DI PROBLEMI
+#point_map <- ggplot(data = matrix_nclust, aes(x = time, y = cluster_size)) + geom_point(aes(size = cluster_amount_MW,
+#                                                                               colour = cluster_amount_MW),
+#                                                                           alpha = 1/50) +
+#  scale_y_discrete(breaks = c("size_100", "size_200", "size_300", "size_400", "size_500", "size_600", "size_700"),
+#                   name = "Molecules in a Cluster") +
+#  scale_radius(guide = "none") +
+#  scale_colour_gradient(low = "#AC80A0", high = "#0471A6", na.value = "white", name = "Amount", guide = "none") +
+#  theme_bw() +
+#  expand_limits(y = 700)
+
+
 
 
 # MERGE
-ggplot(data = matrix_nclust, aes(x = time, y = cluster_size)) + geom_raster(aes(fill = cluster_amount_MW)) + # ok
-  scale_fill_gradient(low = "#AC80A0", high = "#0471A6", na.value = "white", guide = "none") + # Questo va bene
-  labs(title = "Heat map of fibrils elongation") +
-  geom_point(aes(size = cluster_amount_MW, colour = cluster_amount_MW), alpha = 1/40) +
-  scale_radius(guide = "none") +
-  scale_y_discrete(breaks = c("size_100", "size_200", "size_300", "size_400", "size_500", "size_600"),
-                   name = "Molecules in a Cluster") +
-  scale_colour_gradient(low = "#AC80A0", high = "#0471A6", na.value = "white", guide = "none") +
-  expand_limits(y = 700) +
-  theme_bw()
+#merge <- ggplot(data = matrix_nclust, aes(x = time, y = cluster_size)) + geom_raster(aes(fill = cluster_amount_MW)) + # ok
+#  scale_fill_gradient(low = "#AC80A0", high = "#0471A6", na.value = "white", guide = "none") + # Questo va bene
+#  labs(title = "Heat map of fibrils elongation") +
+#  geom_point(aes(size = cluster_amount_MW, colour = cluster_amount_MW), alpha = 1/40) +
+#  scale_radius(guide = "none") +
+#  scale_y_discrete(breaks = c("size_100", "size_200", "size_300", "size_400", "size_500", "size_600"),
+#                   name = "Molecules in a Cluster") +
+#  scale_colour_gradient(low = "#AC80A0", high = "#0471A6", na.value = "white", guide = "none") +
+#  expand_limits(y = 700) +
+#  theme_bw()
