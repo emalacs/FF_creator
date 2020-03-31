@@ -50,7 +50,7 @@ histo_plot <- ggplot(data = total_to_plot, aes(x = time, y = value)) + geom_col(
 # HEAT MAP
 heat_clust <- ggplot(data = matrix_nclust, aes(x = time, y = cluster_size)) +
   geom_raster(aes(fill = cluster_amount_MW)) +
-  scale_fill_gradient(low = "#AC80A0", high = "#0471A6", na.value = "transparent", guide = "none") + # Questo va bene
+  scale_fill_gradient(low = "#AC80A0", high = "#0471A6", na.value = "transparent", guide = "none") +
   scale_y_discrete(breaks = c("size_100", "size_200", "size_300", "size_400", "size_500", "size_600"),
                    name = "Molecules in a Cluster", labels = c("size_100" = "100", "size_200" = "200",
                                                                "size_300" = "300", "size_400" = "400",
@@ -59,8 +59,6 @@ heat_clust <- ggplot(data = matrix_nclust, aes(x = time, y = cluster_size)) +
   scale_x_continuous(name = "Time (ns)") +
   theme(panel.background = element_rect(fill = "transparent", colour = "black"),
         panel.grid.major = element_line(colour = "grey90"))
-
-
 
 # Merged ones
 histo_merge <- ggplot(data = total_to_plot, aes(x = time, y = value)) + geom_col(aes(fill = time)) +
@@ -87,12 +85,18 @@ merge_plot <- grid.newpage()
 merge_plot <- grid.draw(rbind(ggplotGrob(histo_merge), ggplotGrob(heat_merge), size = "last"))
 
 heat_zoom <- heat_clust + facet_grid() + coord_cartesian(xlim = c(200,500), ylim = c(0,50)) +
-  scale_y_discrete(breaks = c("size_5", "size_10", "size_15", "size_20", "size_25", "size_30", "size_35", "size_40", "size_45",
-                              "size_50", name = "none")) +
+  scale_y_discrete(breaks = c("size_5", "size_10", "size_15", "size_20", "size_25", "size_30", "size_35", "size_40",
+                              "size_45", "size_50", name = "none")) +
   scale_x_continuous(breaks = c(200, 250, 275, 300, 350, 400, 450, 500))
 merge_zoom <- grid.newpage()
 merge_zoom <- grid.draw(rbind(ggplotGrob(heat_merge), ggplotGrob(heat_zoom), size = "last"))
 histo_plot
+
+
+
+
+
+
 
 
 
@@ -120,7 +124,7 @@ histo_plot
 
 
 # MERGE
-#merge <- ggplot(data = matrix_nclust, aes(x = time, y = cluster_size)) + geom_raster(aes(fill = cluster_amount_MW)) + # ok
+#merge <- ggplot(data = matrix_nclust, aes(x = time, y = cluster_size)) + geom_raster(aes(fill = cluster_amount_MW)) +
 #  scale_fill_gradient(low = "#AC80A0", high = "#0471A6", na.value = "white", guide = "none") + # Questo va bene
 #  labs(title = "Heat map of fibrils elongation") +
 #  geom_point(aes(size = cluster_amount_MW, colour = cluster_amount_MW), alpha = 1/40) +
