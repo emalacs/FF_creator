@@ -16,6 +16,9 @@ from read_input_files import *
     # gromos_mass -> atom_type:mass N:150067
     # res_atom_dict -> residue_atom:chemical type TYR_N:N
 gro_atoms = read_gro_atoms()
+
+resnr_pairs = gro_atoms.set_index('atom_nmr')['resnr'].to_dict()
+
 dict_gro_atomtypes = gro_atoms.set_index('; nr')['res_atom'].to_dict()
 
 gromos_mass = gro_atoms[['type', 'mass']].drop_duplicates(subset=['type'], keep='first').copy()

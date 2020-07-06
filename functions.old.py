@@ -498,17 +498,10 @@ def ffnonbonded_merge_pairs(pep_pairs, fib_pairs, dict_pep_atomtypes, dict_fib_a
     inv_pairs = pairs[['aj', 'ai', 'type', 'A', 'B']].copy()
     inv_pairs.columns = ['ai', 'aj', 'type', 'A', 'B']
     pairs_full = pairs.append(inv_pairs, sort = False, ignore_index = True)
-    
-    pairs_full['n_ai'] = pairs_full['ai']
-    pairs_full['n_aj'] = pairs_full['aj']
-    pairs_full["n_ai"].replace(resnr_pairs, inplace = True)
-    pairs_full["n_aj"].replace(resnr_pairs, inplace = True)    
-
-
-    #n_ai = pairs_full.ai.str.extract('(\d+)')
-    #n_aj = pairs_full.aj.str.extract('(\d+)')
-    #pairs_full['n_ai'] = n_ai
-    #pairs_full['n_aj'] = n_aj
+    n_ai = pairs_full.ai.str.extract('(\d+)')
+    n_aj = pairs_full.aj.str.extract('(\d+)')
+    pairs_full['n_ai'] = n_ai
+    pairs_full['n_aj'] = n_aj
     pairs_full['cond'] = np.where((pairs_full['n_ai'] >= pairs_full['n_aj']), pairs_full['ai'], np.nan)
     pairs_full = pairs_full.dropna()
     pairs_full = pairs_full.drop(['cond', 'n_ai', 'n_aj'], axis = 1)
