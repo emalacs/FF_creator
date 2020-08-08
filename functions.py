@@ -499,34 +499,45 @@ def ffnonbonded_merge_pairs(pep_pairs, fib_pairs, dict_pep_atomtypes, dict_fib_a
     inv_pairs.columns = ['ai', 'aj', 'type', 'A', 'B']
     pairs_full = pairs.append(inv_pairs, sort = False, ignore_index = True)
     
-    pairs_full['n_ai'] = pairs_full['ai']
-    pairs_full['n_aj'] = pairs_full['aj']
-    pairs_full["n_ai"].replace(resnr_pairs, inplace = True)
-    pairs_full["n_aj"].replace(resnr_pairs, inplace = True)    
-
-
-    #n_ai = pairs_full.ai.str.extract('(\d+)')
-    #n_aj = pairs_full.aj.str.extract('(\d+)')
-    #pairs_full['n_ai'] = n_ai
-    #pairs_full['n_aj'] = n_aj
-    pairs_full['cond'] = np.where((pairs_full['n_ai'] >= pairs_full['n_aj']), pairs_full['ai'], np.nan)
-    pairs_full = pairs_full.dropna()
-    pairs_full = pairs_full.drop(['cond', 'n_ai', 'n_aj'], axis = 1)
     # Sorting the pairs
     pairs_full.sort_values(by = ['ai', 'aj', 'A'], inplace = True)
-    # Duplicates removal
-    # Merging columns in order to drop the duplicates
-    # pairs_full['ai'] = pairs_full['ai'].apply(str) + ':' + pairs_full['aj'].apply(str) # questo come funzionava prima
-    # Cleaning the remaining duplicates
+    # Cleaning the duplicates
     pairs_full = pairs_full.drop_duplicates(subset = ['ai', 'aj'], keep = 'first')
-    # Column separation
-    ai_aj = pairs_full['ai'].str.split(":", n = 1, expand = True)
-    # QUESTI DUE COMANDI SONO DOPO IL SET COPY WARNING
-    pairs_full.loc[:, 'ai'] = ai_aj.loc[:, 0]
 
-    # QUESTI DUE COMANDI SONO QUELLI PRIMA DEL COPY WARNING
-    # clean_pairs['ai'] = ai_aj[0]
-    # clean_pairs['aj'] = ai_aj[1]
+    # Removing the reverse duplicates
+    cols = ['ai', 'aj']
+    pairs_full[cols] = np.sort(pairs_full[cols].values, axis=1)
+    pairs_full = pairs_full.drop_duplicates()
+
+    
+            ###pairs_full['n_ai'] = pairs_full['ai']
+            ###pairs_full['n_aj'] = pairs_full['aj']
+            ###pairs_full["n_ai"].replace(resnr_pairs, inplace = True)
+            ###pairs_full["n_aj"].replace(resnr_pairs, inplace = True)    
+        ###
+        ###
+            ####n_ai = pairs_full.ai.str.extract('(\d+)')
+            ####n_aj = pairs_full.aj.str.extract('(\d+)')
+            ####pairs_full['n_ai'] = n_ai
+            ####pairs_full['n_aj'] = n_aj
+            ###pairs_full['cond'] = np.where((pairs_full['n_ai'] >= pairs_full['n_aj']), pairs_full['ai'], np.nan)
+            ###pairs_full = pairs_full.dropna()
+            ###pairs_full = pairs_full.drop(['cond', 'n_ai', 'n_aj'], axis = 1)
+            #### Sorting the pairs
+            ###pairs_full.sort_values(by = ['ai', 'aj', 'A'], inplace = True)
+            #### Duplicates removal
+            #### Merging columns in order to drop the duplicates
+            #### pairs_full['ai'] = pairs_full['ai'].apply(str) + ':' + pairs_full['aj'].apply(str) # questo come funzionava prima
+            #### Cleaning the remaining duplicates
+            ###pairs_full = pairs_full.drop_duplicates(subset = ['ai', 'aj'], keep = 'first')
+            #### Column separation
+            ###ai_aj = pairs_full['ai'].str.split(":", n = 1, expand = True)
+            #### QUESTI DUE COMANDI SONO DOPO IL SET COPY WARNING
+            ###pairs_full.loc[:, 'ai'] = ai_aj.loc[:, 0]
+        ###
+            #### QUESTI DUE COMANDI SONO QUELLI PRIMA DEL COPY WARNING
+            #### clean_pairs['ai'] = ai_aj[0]
+            #### clean_pairs['aj'] = ai_aj[1]
     pairs_full.columns = [';ai', 'aj', 'type', 'A', 'B']
     return pairs_full
 
